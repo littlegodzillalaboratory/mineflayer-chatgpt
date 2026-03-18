@@ -1,0 +1,13 @@
+---
+package_name: mineflayer-chatgpt
+author: Cliffano Subagio
+generator:
+  component: node-lib
+  inputs:
+    project_id: mineflayer-chatgpt
+    project_name: Mineflayer ChatGPT
+    project_desc: Mineflayer plugin for sending messages to OpenAI's ChatGPT
+    author_name: Cliffano Subagio
+    author_email: cliffano@gmail.com
+    github_id: littlegodzillalaboratory
+    github_repo: mineflayer-chatgpt
