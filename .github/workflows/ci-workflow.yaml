@@ -3,15 +3,16 @@ name: CI
 on: [push, pull_request, workflow_dispatch]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       max-parallel: 1
       matrix:
-        node: [ '18', '20' ]
+        # Available node versions: https://raw.githubusercontent.com/actions/node-versions/main/versions-manifest.json
+        node: [ '20', '22', '24' ]
     name: node ${{ matrix.node }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
       - run: npm install -g bob@4
