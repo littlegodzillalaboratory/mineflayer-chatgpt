@@ -1,9 +1,9 @@
-<img align="right" src="https://raw.github.com/cliffano/mineflayer-chatgpt/master/avatar.jpg" alt="Avatar"/>
+<img align="right" src="https://raw.github.com/littlegodzillalaboratory/mineflayer-chatgpt/main/avatar.jpg" alt="Avatar"/>
 
-[![Build Status](https://github.com/cliffano/mineflayer-chatgpt/workflows/CI/badge.svg)](https://github.com/cliffano/mineflayer-chatgpt/actions?query=workflow%3ACI)
-[![Security Status](https://snyk.io/test/github/cliffano/mineflayer-chatgpt/badge.svg)](https://snyk.io/test/github/cliffano/mineflayer-chatgpt)
-[![Dependencies Status](https://img.shields.io/librariesio/release/npm/mineflayer-chatgpt)](https://libraries.io/github/cliffano/mineflayer-chatgpt)
-[![Coverage Status](https://img.shields.io/coveralls/cliffano/mineflayer-chatgpt.svg)](https://coveralls.io/r/cliffano/mineflayer-chatgpt?branch=master)
+[![Build Status](https://github.com/littlegodzillalaboratory/mineflayer-chatgpt/workflows/CI/badge.svg)](https://github.com/littlegodzillalaboratory/mineflayer-chatgpt/actions?query=workflow%3ACI)
+[![Security Status](https://snyk.io/test/github/littlegodzillalaboratory/mineflayer-chatgpt/badge.svg)](https://snyk.io/test/github/littlegodzillalaboratory/mineflayer-chatgpt)
+[![Dependencies Status](https://img.shields.io/librariesio/release/npm/mineflayer-chatgpt)](https://libraries.io/github/littlegodzillalaboratory/mineflayer-chatgpt)
+[![Coverage Status](https://img.shields.io/coveralls/littlegodzillalaboratory/mineflayer-chatgpt.svg)](https://coveralls.io/r/littlegodzillalaboratory/mineflayer-chatgpt?branch=main)
 [![Published Version](https://img.shields.io/npm/v/mineflayer-chatgpt.svg)](http://www.npmjs.com/package/mineflayer-chatgpt)
 <br/>
 
@@ -48,12 +48,12 @@ Send a message to ChatGPT:
 Colophon
 --------
 
-[Developer's Guide](https://cliffano.github.io/developers_guide.html#nodejs)
+[Developer's Guide](https://littlegodzillalaboratory.github.io/developers_guide.html#nodejs)
 
 Build reports:
 
-* [Code complexity report](https://cliffano.github.io/mineflayer-chatgpt/complexity/plato/index.html)
-* [Unit tests report](https://cliffano.github.io/mineflayer-chatgpt/test/mocha.txt)
-* [Test coverage report](https://cliffano.github.io/mineflayer-chatgpt/coverage/c8/index.html)
-* [Integration tests report](https://cliffano.github.io/mineflayer-chatgpt/test-integration/cmdt.txt)
-* [API Documentation](https://cliffano.github.io/mineflayer-chatgpt/doc/jsdoc/index.html)
+* [Code complexity report](https://littlegodzillalaboratory.github.io/mineflayer-chatgpt/complexity/plato/index.html)
+* [Unit tests report](https://littlegodzillalaboratory.github.io/mineflayer-chatgpt/test/mocha.txt)
+* [Test coverage report](https://littlegodzillalaboratory.github.io/mineflayer-chatgpt/coverage/c8/index.html)
+* [Integration tests report](https://littlegodzillalaboratory.github.io/mineflayer-chatgpt/test-integration/cmdt.txt)
+* [API Documentation](https://littlegodzillalaboratory.github.io/mineflayer-chatgpt/doc/jsdoc/index.html)
