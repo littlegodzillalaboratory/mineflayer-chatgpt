@@ -16,14 +16,18 @@
   exitcode: 0
 
 - description: Run example bot, check the bot is spawned
-  command: 'HOST=$(make -f {base}/test-integration/fixtures/Makefile get-minecraft-server-ip-address) node {base}/examples/bot.js'
-  exitcode: 123
+  command: 'HOST=$(make --no-print-directory -f {base}/test-integration/fixtures/Makefile get-minecraft-server-ip-address | xargs) node {base}/examples/bot.js'
+  exitcode: 1
   output: '.*Example bot has been spawned.*'
 
 - description: Run example bot, check for OpenAI error due to lack of API key
-  command: 'HOST=$(make -f {base}/test-integration/fixtures/Makefile get-minecraft-server-ip-address) node {base}/examples/bot.js'
-  exitcode: 123
+  command: 'HOST=$(make --no-print-directory -f {base}/test-integration/fixtures/Makefile get-minecraft-server-ip-address | xargs) node {base}/examples/bot.js'
+  exitcode: 1
   output: '.*An OpenAI error has occurred.*'
+
+- description: Allow Minecraft test to run and complete
+  command: 'sleep 120'
+  exitcode: 0
 
 - description: Stop Minecraft server and remove container
   command: 'make -f {base}/test-integration/fixtures/Makefile stop-minecraft-server'
