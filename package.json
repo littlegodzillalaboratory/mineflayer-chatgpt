@@ -7,7 +7,7 @@
   ],
   "version": "0.10.1-pre.0",
   "homepage": "https://github.com/cliffano/mineflayer-chatgpt",
-  "author": "Cliffano Subagio cliffano@gmail.com (blog.cliffano.com)",
+  "author": "Cliffano Subagio cliffano@gmail.com (https://cliffano.com)",
   "contributors": [
     "All contributors (https://github.com/cliffano/mineflayer-chatgpt/graphs/contributors)"
   ],
@@ -24,16 +24,16 @@
     "test": "./test"
   },
   "dependencies": {
-    "mineflayer": "^4.23.0",
-    "openai": "^4.47.1"
+    "mineflayer": "^4.35.0",
+    "openai": "^6.31.0"
   },
   "devDependencies": {
-    "sinon": "^18.0.0",
-    "@sinonjs/referee": "^11.0.1"
+    "@sinonjs/referee": "^11.0.1",
+    "sinon": "^21.0.3"
   },
   "scripts": {},
   "engines": {
-    "node": ">= 18.0.0"
+    "node": ">= 22.0.0"
   },
   "licenses": [
     {
