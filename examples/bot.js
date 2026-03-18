@@ -1,9 +1,6 @@
 "use strict"
 import mineflayer from 'mineflayer';
 import mineflayerChatgpt from 'mineflayer-chatgpt';
-import { sleep } from 'openai/core';
-
-let hasSpawned = false;
 
 console.log('Initialising example bot...');
 const bot = mineflayer.createBot({
@@ -23,8 +20,6 @@ bot.once('spawn', () => {
   bot.chatgpt.setConfig('sk-someinexistingapikey');
   bot.chatgpt.sendMessage('otherplayer', 'Hello');
   console.log('Example bot has been spawned');
-  console.log('Allow 10 seconds for OpenAI error to occur...');
-  setTimeout(() => {
-    process.exit(123);
-  }, 10000);
+  // Since we don't use a valid API key, the above call will log the following error message:
+  // An unexpected error has occurred: An OpenAI error has occurred: 401 invalid_request_error invalid_api_key 401 Incorrect API key provided: sk-somei***********ikey. You can find your API key at https://platform.openai.com/account/api-keys.
 });

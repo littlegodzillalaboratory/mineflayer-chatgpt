@@ -2,6 +2,6 @@
   "name": "mineflayer-chatgpt-examples",
   "type": "module",
   "dependencies": {
-    "mineflayer": "^4.20.1"
+    "mineflayer": "^4.35.0"
   }
 }
