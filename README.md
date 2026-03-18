@@ -1,10 +1,11 @@
 <img align="right" src="https://raw.github.com/littlegodzillalaboratory/mineflayer-chatgpt/main/avatar.jpg" alt="Avatar"/>
 
 [![Build Status](https://github.com/littlegodzillalaboratory/mineflayer-chatgpt/workflows/CI/badge.svg)](https://github.com/littlegodzillalaboratory/mineflayer-chatgpt/actions?query=workflow%3ACI)
+[![Dependencies Status](https://img.shields.io/librariesio/release/npm/rtk)](https://libraries.io/npm/rtk)
+[![Code Scanning Status](https://github.com/littlegodzillalaboratory/mineflayer-chatgpt/workflows/CodeQL/badge.svg)](https://github.com/littlegodzillalaboratory/mineflayer-chatgpt/actions?query=workflow%3ACodeQL)
+[![Coverage Status](https://coveralls.io/repos/github/littlegodzillalaboratory/mineflayer-chatgpt/badge.svg?branch=main)](https://coveralls.io/r/littlegodzillalaboratory/mineflayer-chatgpt?branch=main)
 [![Security Status](https://snyk.io/test/github/littlegodzillalaboratory/mineflayer-chatgpt/badge.svg)](https://snyk.io/test/github/littlegodzillalaboratory/mineflayer-chatgpt)
-[![Dependencies Status](https://img.shields.io/librariesio/release/npm/mineflayer-chatgpt)](https://libraries.io/github/littlegodzillalaboratory/mineflayer-chatgpt)
-[![Coverage Status](https://img.shields.io/coveralls/littlegodzillalaboratory/mineflayer-chatgpt.svg)](https://coveralls.io/r/littlegodzillalaboratory/mineflayer-chatgpt?branch=main)
-[![Published Version](https://img.shields.io/npm/v/mineflayer-chatgpt.svg)](http://www.npmjs.com/package/mineflayer-chatgpt)
+[![Published Version](https://img.shields.io/npm/v/rtk.svg)](https://www.npmjs.com/package/rtk)
 <br/>
 
 Mineflayer ChatGPT
