@@ -1,32 +1,47 @@
 
 [0m[0m
-[0m  action[0m
-[0m    respond to message[0m
+[0m  client[0m
+[0m    chat with OpenAI API[0m
     [32m  [32m✔[39m[0m[90m should return a reply from chat completion message[0m
-    [32m  [32m✔[39m[0m[90m should register reference to memory[0m
+    [32m  [32m✔[39m[0m[90m should register messages to memory[0m
+    [32m  [32m✔[39m[0m[90m should include conversation history for existing players[0m
+    [32m  [32m✔[39m[0m[90m should use custom model when provided in options[0m
+    [32m  [32m✔[39m[0m[90m should use custom instructions when provided in options[0m
+    [32m  [32m✔[39m[0m[90m should wrap OpenAI.APIError and rethrow as a regular Error[0m
+
+[0m  conversation[0m
+[0m    manage messages[0m
+    [32m  [32m✔[39m[0m[90m should start with an empty messages list[0m
+    [32m  [32m✔[39m[0m[90m should add a message to the conversation[0m
+    [32m  [32m✔[39m[0m[90m should add multiple messages in order[0m
 
 [0m  memory[0m
-[0m    check memory references[0m
-    [32m  [32m✔[39m[0m[90m should not return undefined when retrieving reference of an existing player[0m
-    [32m  [32m✔[39m[0m[90m should return undefined when retrieving reference of an inexisting player[0m
+[0m    manage player conversations[0m
     [32m  [32m✔[39m[0m[90m should return true when checking for an existing player[0m
     [32m  [32m✔[39m[0m[90m should return false when checking for an inexisting player[0m
+    [32m  [32m✔[39m[0m[90m should retrieve conversation for an existing player[0m
+    [32m  [32m✔[39m[0m[90m should initialize a new conversation for a new player on retrieve[0m
+    [32m  [32m✔[39m[0m[90m should register multiple messages in a conversation[0m
+
+[0m  message[0m
+[0m    retrieve properties[0m
+    [32m  [32m✔[39m[0m[90m should get role[0m
+    [32m  [32m✔[39m[0m[90m should get content[0m
+[0m    different roles[0m
+    [32m  [32m✔[39m[0m[90m should support user role[0m
+    [32m  [32m✔[39m[0m[90m should support assistant role[0m
+    [32m  [32m✔[39m[0m[90m should support developer role[0m
 
 [0m  mineflayer-chatgpt[0m
 [0m    chatgpt[0m
     [32m  [32m✔[39m[0m[90m should add setConfig function[0m
     [32m  [32m✔[39m[0m[90m should add sendMessage function[0m
-    [32m  [32m✔[39m[0m[90m should set opts when setConfig is called[0m
-    [32m  [32m✔[39m[0m[90m should complete and set opts when setConfig is called with undefined opts[0m
-    [32m  [32m✔[39m[0m[90m should call bot chat when sendMessage is called without error[0m
-    [32m  [32m✔[39m[0m[90m should logged error message when it is a generic error[0m
-    [32m  [32m✔[39m[0m[90m should logged formatted error message when it is an OpenAI.APIError[0m
-
-[0m  reference[0m
-[0m    retrieve properties[0m
-    [32m  [32m✔[39m[0m[90m should get conversation ID[0m
-    [32m  [32m✔[39m[0m[90m should get parent message ID[0m
+    [32m  [32m✔[39m[0m[90m should set config when setConfig is called with opts[0m
+    [32m  [32m✔[39m[0m[90m should set config when setConfig is called without opts[0m
+    [32m  [32m✔[39m[0m[90m should call client chat when sendMessage is called without error[0m
+    [32m  [32m✔[39m[0m[90m should log error message when it is a generic error[0m
+    [32m  [32m✔[39m[0m[90m should log error message when OpenAI error is rethrown by client[0m
 
 
-[92m [0m[32m 15 passing[0m[90m (18ms)[0m
+[92m [0m[32m 26 passing[0m[90m (21ms)[0m
 

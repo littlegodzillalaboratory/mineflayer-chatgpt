@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Plato - lib/memory.js</title>
+  <title>Plato - lib/message.js</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
@@ -36,7 +36,7 @@
 
 <div class="jumbotron">
   <div class="container">
-    <h1>lib/memory.js</h1>
+    <h1>lib/message.js</h1>
   </div>
 </div>
 
@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">83.01</p>
+      <p class="stat">90.47</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">54</p>
+      <p class="stat">28</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">19.79</p>
+      <p class="stat">8.44</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">0.15</p>
+      <p class="stat">0.05</p>
     </div>
   </div>
 </div>
@@ -91,57 +91,31 @@
   <div class="row">
     <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
 
-import Conversation from &#039;./conversation.js&#039;;
+// Message class to encapsulate a message payload to be sent to OpenAI API.
+// A message consists of a role and content.
+class Message {
 
-// Memory class to manage conversations for different players.
-// Because a single Mineflayer bot can interact with multiple players,
-// a conversation with each player has its own history and context.
-// TODO: Consider adding configurable memory expiration.
-// E.g. if a player hasn&#039;t interacted for a while, their memory could be cleared.
-// This could be implemented with a timestamp for each conversation.
-class Memory {
-
-  constructor() {
-    this.conversations = {};
+  // Initializes a new Message instance with a role and content.
+  // The role can be &#039;user&#039;, &#039;assistant&#039;, or &#039;developer&#039;.
+  // The content is the actual message string.
+  constructor(role, content) {
+    this.role = role;
+    this.content = content;
   }
 
-  // Check if there&#039;s any memory of a conversation with a specific player.
-  // Returns true if the player exists in memory, false otherwise.
-  // This is useful for checking if a player has an ongoing conversation.
-  exists(player) {
-    return player in this.conversations;
+  // Retrieve the role of the message.
+  getRole() {
+    return this.role;
   }
 
-  // Initialize a conversation with a specific player.
-  // If the player already exists, it does nothing and logs a warning.
-  initialize(player) {
-    if (!this.exists(player)) {
-      this.conversations[player] = new Conversation();
-    } else {
-      console.warn(`Memory for player ${player} already exists. Nothing to initialize.`);
-    }
+  // Retrieve the content of the message.
+  getContent() {
+    return this.content;
   }
-
-  // Retrieve the conversation history for a specific player.
-  // If the player does not exist in memory, it initializes a new conversation.
-  // This ensures that the conversation can be used immediately without checking existence.
-  retrieve(player) {
-    if (!this.exists(player)) {
-      this.initialize(player);
-    }
-    return this.conversations[player];
-  }
-
-  // Register a new message in the conversation for a specific player.
-  // This method adds a message to the player&#039;s conversation history.
-  register(player, message) {
-    this.conversations[player].addMessage(message);
-  }
-
 }
 
 export {
-  Memory as default
+  Message as default
 };</textarea>
   </div>
 </div>

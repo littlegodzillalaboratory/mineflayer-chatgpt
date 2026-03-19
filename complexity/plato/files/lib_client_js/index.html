@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Plato - lib/action.js</title>
+  <title>Plato - lib/client.js</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
@@ -36,7 +36,7 @@
 
 <div class="jumbotron">
   <div class="container">
-    <h1>lib/action.js</h1>
+    <h1>lib/client.js</h1>
   </div>
 </div>
 
@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">62.73</p>
+      <p class="stat">53.24</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">39</p>
+      <p class="stat">82</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">11.41</p>
+      <p class="stat">31.25</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">0.15</p>
+      <p class="stat">0.51</p>
     </div>
   </div>
 </div>
@@ -89,44 +89,87 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="col-md-12">&quot;use strict&quot;
-import Reference from &#039;./reference.js&#039;;
+    <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
+import Message from &#039;./message.js&#039;;
+import OpenAI from &#039;openai&#039;;
 
-async function respond(memory, api, player, message) {
+// Client class to interact with OpenAI&#039;s API
+class Client {
 
-  const params = {
-    messages: [{ role: &#039;user&#039;, content: message }],
-    model: &#039;gpt-3.5-turbo&#039;
-  };
+  constructor(apiKey, opts) {
+    opts = opts || {};
+    this.opts = {
+      model: opts.model || &#039;gpt-4o&#039;,
+      instructions: opts.instructions || &#039;You are a helpful assistant in a Minecraft world. Answer questions and provide information relevant to the game.&#039;
+    };
+    this.openAI = new OpenAI({
+      apiKey: apiKey
+    });
+  }
 
-  // if (memory.exists(player)) {
+  // The chat method sends the player&#039;s message to OpenAI API
+  // and returns the assistant&#039;s reply.
+  // The memory parameter is used to manage conversation history for each player,
+  // which is included in the messages sent to OpenAI API to provide context for
+  // generating replies.
+  async chat(memory, player, message) {
 
-  //   // if there&#039;s prior reference for the player
-  //   // then send the message with the reference information
-  //   // in order to provide context to the conversation
-  //   previousReference = memory.retrieve(player);
-  //   // TODO: add previousReference details to the message params
-  // }
+    // Construct the messages payload for OpenAI API.
+    // It always includes the developer instructions, accompanied by
+    // conversation history, and the user message for the current chat.
 
-  const chatCompletion = await api.chat.completions.create(params);
-  const reply = chatCompletion.choices[0].message.content;
+    const params = {
+      model: this.opts.model,
+      messages: [
+        { role: &#039;developer&#039;, content: this.opts.instructions }
+      ]
+    };
 
-  // memorise current reference against the player
-  const reference = new Reference(
-    chatCompletion.id,
-    chatCompletion.id
-  );
-  memory.register(player, reference);
+    let conversation;
+    if (memory.exists(player)) {
+      // If there&#039;s prior conversation for the player,
+      // the conversation history will be included in the messages
+      // sent to OpenAI API in order to provide context
+      conversation = memory.retrieve(player);
+    } else {
+      // If there&#039;s no prior conversation for the player,
+      // then initialize a new conversation
+      memory.initialize(player);
+      conversation = memory.retrieve(player);
+    }
+    for (const message of conversation.getMessages()) {
+      params.messages.push({ role: message.getRole(), content: message.getContent() });
+    }
+    
+    const userMessage = new Message(&#039;user&#039;, message);
+    params.messages.push({ role: userMessage.getRole(), content: userMessage.getContent() });
+    
+    let reply;
 
-  return reply;
+    try {
+
+      const chatCompletion = await this.openAI.chat.completions.create(params);
+      reply = chatCompletion.choices[0].message.content;
+
+    } catch (error) {
+      if (error instanceof OpenAI.APIError) {
+        error = new Error(`An OpenAI error has occurred: ${error.status} ${error.type} ${error.code} ${error.message}`);
+      }
+      throw error;
+    }
+
+    // register the user message and assistant reply in memory
+    memory.register(player, userMessage);
+    const assistantMessage = new Message(&#039;assistant&#039;, reply);
+    memory.register(player, assistantMessage);
+  
+    return reply;
+  }
+
 }
 
-const exports = {
-  respond: respond
-};
-
 export {
-  exports as default
+  Client as default
 };</textarea>
   </div>
 </div>

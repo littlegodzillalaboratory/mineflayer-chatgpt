@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">70.13</p>
+      <p class="stat">76.81</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">43</p>
+      <p class="stat">34</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">22.12</p>
+      <p class="stat">18.41</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">0.26</p>
+      <p class="stat">0.15</p>
     </div>
   </div>
 </div>
@@ -89,37 +89,28 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="col-md-12">&quot;use strict&quot;
-import action from &#039;./action.js&#039;;
+    <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
+import Client from &#039;./client.js&#039;;
 import Memory from &#039;./memory.js&#039;;
-import OpenAI from &#039;openai&#039;;
 
 const memory = new Memory();
+let client;
 
 function chatgpt(bot) {
-
-  let api;
 
   bot.chatgpt = {};
 
   bot.chatgpt.setConfig = (apiKey, opts) =&gt; {
-    api = new OpenAI({
-      apiKey: apiKey
-    });
-    opts = opts || {};
-    opts.model = opts.model || &#039;gpt-3.5-turbo&#039;;
-  }
+    client = new Client(apiKey, opts);
+  };
 
   bot.chatgpt.sendMessage = async (player, message) =&gt; {
     try {
-      const reply = await action.respond(memory, api, player, message);
-      bot.chat(reply);
+      const reply = await client.chat(memory, player, message);
+      return reply;
     } catch (error) {
-      if (error instanceof OpenAI.APIError) {
-        console.error(`An OpenAI error has occurred: ${error.status} ${error.type} ${error.code} ${error.message}`);
-      } else {
-        console.error(`An unexpected error has occurred: ${error.message}`);
-      }
+      console.error(`An unexpected error has occurred: ${error.message}`);
+      throw error;
     }
   };
 
