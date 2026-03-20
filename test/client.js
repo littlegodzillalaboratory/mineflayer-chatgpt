@@ -108,19 +108,13 @@ describe("client", function () {
       assert.equal(clientWithOpts.opts.instructions, customInstructions);
     });
 
-    //   AssertionError [ERR_ASSERTION]: 'headers?.get is not a function' == 'An OpenAI error has occurred: 400 some type some code some openai error'
-    //   + expected - actual
-
-    //   -headers?.get is not a function
-    //   +An OpenAI error has occurred: 400 some type some code some openai error
-
     it("should wrap OpenAI.APIError and rethrow as a regular Error", async function () {
       this.mockOpenAI.chat.completions.create = function (params) {
         throw new OpenAI.APIError(
-          "some openai error",
           400,
-          "some type",
-          "some code",
+          { type: "some type", code: "some code", message: "some openai error" },
+          "some openai error",
+          { get: () => undefined },
         );
       };
       try {
@@ -128,8 +122,8 @@ describe("client", function () {
         assert.fail("Expected an error to be thrown");
       } catch (error) {
         assert.ok(!(error instanceof OpenAI.APIError));
-        // assert.equal(error.message, 'An OpenAI error has occurred: 400 some type some code some openai error');
-        // assert.ok(error.message.includes('An OpenAI error has occurred'));
+        assert.equal(error.message, 'An OpenAI error has occurred: 400 some type some code 400 some openai error');
+        assert.ok(error.message.includes('An OpenAI error has occurred'));
       }
     });
   });

@@ -1,5 +1,6 @@
 "use strict";
 import assert from "assert";
+import sinon from "sinon";
 import Memory from "../lib/memory.js";
 import Message from "../lib/message.js";
 
@@ -29,6 +30,17 @@ describe("memory", function () {
       const conversation = this.memory.retrieve("newplayer");
       assert.notEqual(conversation, undefined);
       assert.deepEqual(conversation.getMessages(), []);
+    });
+    it("should log when initializing conversation for an existing player", function () {
+      const consoleStub = sinon.stub(console, "info");
+      this.memory.initialize("someplayer");
+      assert(consoleStub.calledOnce);
+      assert(
+        consoleStub.calledWith(
+          "Memory for player someplayer already exists. Nothing to initialize.",
+        ),
+      );
+      consoleStub.restore();
     });
     it("should register multiple messages in a conversation", function () {
       const reply = new Message("assistant", "Hi there!");
