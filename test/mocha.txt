@@ -43,5 +43,5 @@
     [32m  [32m✔[39m[0m[90m should log error message when OpenAI error is rethrown by client[0m
 
 
-[92m [0m[32m 26 passing[0m[90m (24ms)[0m
+[92m [0m[32m 26 passing[0m[90m (29ms)[0m
 
