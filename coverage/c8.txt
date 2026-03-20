@@ -1,4 +1,6 @@
-test | /opt/hostedtoolcache/node/24.14.0/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
+(node:2514) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+test | /opt/hostedtoolcache/node/22.22.1/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
 
 [0m[0m
 [0m  client[0m
@@ -44,16 +46,16 @@ test | /opt/hostedtoolcache/node/24.14.0/x64/lib/node_modules/bob/node_modules/.
     [32m  [32m✔[39m[0m[90m should log error message when OpenAI error is rethrown by client[0m
 
 
-[92m [0m[32m 26 passing[0m[90m (29ms)[0m
+[92m [0m[32m 26 passing[0m[90m (23ms)[0m
 
 SUCCESS | exit code 0
 -----------------------|---------|----------|---------|---------|-------------------
 File                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -----------------------|---------|----------|---------|---------|-------------------
-All files              |   98.25 |    94.28 |     100 |   98.25 |                   
- client.js             |   97.56 |     92.3 |     100 |   97.56 | 65-66             
+All files              |   96.31 |    94.28 |     100 |   96.31 |                   
+ client.js             |   95.18 |     92.3 |     100 |   95.18 | 67-70             
  conversation.js       |     100 |      100 |     100 |     100 |                   
- memory.js             |   96.29 |     87.5 |     100 |   96.29 | 30-31             
+ memory.js             |    92.3 |     87.5 |     100 |    92.3 | 29-32             
  message.js            |     100 |      100 |     100 |     100 |                   
  mineflayer-chatgpt.js |     100 |      100 |     100 |     100 |                   
 -----------------------|---------|----------|---------|---------|-------------------

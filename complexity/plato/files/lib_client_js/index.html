@@ -48,7 +48,7 @@
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">82</p>
+      <p class="stat">83</p>
     </div>
   </div>
   <div class="row historical">
@@ -90,20 +90,21 @@
 <div class="container">
   <div class="row">
     <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
-import Message from &#039;./message.js&#039;;
-import OpenAI from &#039;openai&#039;;
+import Message from &quot;./message.js&quot;;
+import OpenAI from &quot;openai&quot;;
 
 // Client class to interact with OpenAI&#039;s API
 class Client {
-
   constructor(apiKey, opts) {
     opts = opts || {};
     this.opts = {
-      model: opts.model || &#039;gpt-4o&#039;,
-      instructions: opts.instructions || &#039;You are a helpful assistant in a Minecraft world. Answer questions and provide information relevant to the game.&#039;
+      model: opts.model || &quot;gpt-4o&quot;,
+      instructions:
+        opts.instructions ||
+        &quot;You are a helpful assistant in a Minecraft world. Answer questions and provide information relevant to the game.&quot;,
     };
     this.openAI = new OpenAI({
-      apiKey: apiKey
+      apiKey: apiKey,
     });
   }
 
@@ -113,16 +114,13 @@ class Client {
   // which is included in the messages sent to OpenAI API to provide context for
   // generating replies.
   async chat(memory, player, message) {
-
     // Construct the messages payload for OpenAI API.
     // It always includes the developer instructions, accompanied by
     // conversation history, and the user message for the current chat.
 
     const params = {
       model: this.opts.model,
-      messages: [
-        { role: &#039;developer&#039;, content: this.opts.instructions }
-      ]
+      messages: [{ role: &quot;developer&quot;, content: this.opts.instructions }],
     };
 
     let conversation;
@@ -138,39 +136,42 @@ class Client {
       conversation = memory.retrieve(player);
     }
     for (const message of conversation.getMessages()) {
-      params.messages.push({ role: message.getRole(), content: message.getContent() });
+      params.messages.push({
+        role: message.getRole(),
+        content: message.getContent(),
+      });
     }
-    
-    const userMessage = new Message(&#039;user&#039;, message);
-    params.messages.push({ role: userMessage.getRole(), content: userMessage.getContent() });
-    
+
+    const userMessage = new Message(&quot;user&quot;, message);
+    params.messages.push({
+      role: userMessage.getRole(),
+      content: userMessage.getContent(),
+    });
+
     let reply;
 
     try {
-
       const chatCompletion = await this.openAI.chat.completions.create(params);
       reply = chatCompletion.choices[0].message.content;
-
     } catch (error) {
       if (error instanceof OpenAI.APIError) {
-        error = new Error(`An OpenAI error has occurred: ${error.status} ${error.type} ${error.code} ${error.message}`);
+        error = new Error(
+          `An OpenAI error has occurred: ${error.status} ${error.type} ${error.code} ${error.message}`,
+        );
       }
       throw error;
     }
 
     // register the user message and assistant reply in memory
     memory.register(player, userMessage);
-    const assistantMessage = new Message(&#039;assistant&#039;, reply);
+    const assistantMessage = new Message(&quot;assistant&quot;, reply);
     memory.register(player, assistantMessage);
-  
+
     return reply;
   }
-
 }
 
-export {
-  Client as default
-};</textarea>
+export { Client as default };</textarea>
   </div>
 </div>
 

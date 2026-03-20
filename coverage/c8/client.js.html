@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.56% </span>
+                <span class="strong">95.18% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>80/82</span>
+                <span class='fraction'>79/83</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.56% </span>
+                <span class="strong">95.18% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>80/82</span>
+                <span class='fraction'>79/83</span>
             </div>
         
             
@@ -144,8 +144,9 @@
 <a name='L79'></a><a href='#L79'>79</a>
 <a name='L80'></a><a href='#L80'>80</a>
 <a name='L81'></a><a href='#L81'>81</a>
-<a name='L82'></a><a href='#L82'>82</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -161,6 +162,8 @@
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -168,9 +171,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
@@ -195,6 +195,9 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
@@ -204,10 +207,13 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -223,23 +229,22 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
-import Message from './message.js';
-import OpenAI from 'openai';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
+import Message from "./message.js";
+import OpenAI from "openai";
 &nbsp;
 // Client class to interact with OpenAI's API
 class Client {
-&nbsp;
   constructor(apiKey, opts) {
     opts = opts || {};
     this.opts = {
-      model: opts.model || 'gpt-4o',
-      instructions: opts.instructions || 'You are a helpful assistant in a Minecraft world. Answer questions and provide information relevant to the game.'
+      model: opts.model || "gpt-4o",
+      instructions:
+        opts.instructions ||
+        "You are a helpful assistant in a Minecraft world. Answer questions and provide information relevant to the game.",
     };
     this.openAI = new OpenAI({
-      apiKey: apiKey
+      apiKey: apiKey,
     });
   }
 &nbsp;
@@ -249,16 +254,13 @@ class Client {
   // which is included in the messages sent to OpenAI API to provide context for
   // generating replies.
   async chat(memory, player, message) {
-&nbsp;
     // Construct the messages payload for OpenAI API.
     // It always includes the developer instructions, accompanied by
     // conversation history, and the user message for the current chat.
 &nbsp;
     const params = {
       model: this.opts.model,
-      messages: [
-        { role: 'developer', content: this.opts.instructions }
-      ]
+      messages: [{ role: "developer", content: this.opts.instructions }],
     };
 &nbsp;
     let conversation;
@@ -274,46 +276,50 @@ class Client {
       conversation = memory.retrieve(player);
     }
     for (const message of conversation.getMessages()) {
-      params.messages.push({ role: message.getRole(), content: message.getContent() });
+      params.messages.push({
+        role: message.getRole(),
+        content: message.getContent(),
+      });
     }
-    
-    const userMessage = new Message('user', message);
-    params.messages.push({ role: userMessage.getRole(), content: userMessage.getContent() });
-    
+&nbsp;
+    const userMessage = new Message("user", message);
+    params.messages.push({
+      role: userMessage.getRole(),
+      content: userMessage.getContent(),
+    });
+&nbsp;
     let reply;
 &nbsp;
     try {
-&nbsp;
       const chatCompletion = await this.openAI.chat.completions.create(params);
       reply = chatCompletion.choices[0].message.content;
-&nbsp;
     } catch (error) {
       if (error instanceof OpenAI.APIError) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >        error = new Error(`An OpenAI error has occurred: ${error.status} ${error.type} ${error.code} ${error.message}`);</span>
+<span class="cstat-no" title="statement not covered" >        error = new Error(</span>
+<span class="cstat-no" title="statement not covered" >          `An OpenAI error has occurred: ${error.status} ${error.type} ${error.code} ${error.message}`,</span>
+<span class="cstat-no" title="statement not covered" >        );</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
       throw error;
     }
 &nbsp;
     // register the user message and assistant reply in memory
     memory.register(player, userMessage);
-    const assistantMessage = new Message('assistant', reply);
+    const assistantMessage = new Message("assistant", reply);
     memory.register(player, assistantMessage);
-  
+&nbsp;
     return reply;
   }
-&nbsp;
 }
 &nbsp;
-export {
-  Client as default
-};</pre></td></tr></table></pre>
+export { Client as default };
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-03-20T00:44:02.811Z
+                at 2026-03-20T10:58:39.608Z
             </div>
         <script src="prettify.js"></script>
         <script>
