@@ -11,6 +11,9 @@ describe("conversation", function () {
     it("should start with an empty messages list", function () {
       assert.deepEqual(this.conversation.getMessages(), []);
     });
+    it("should have default limit 20 when not specified", function () {
+      assert.equal(this.conversation.limit, 20);
+    });
     it("should add a message to the conversation", function () {
       const message = new Message("user", "Hello");
       this.conversation.addMessage(message);
@@ -28,6 +31,45 @@ describe("conversation", function () {
       assert.equal(messages.length, 2);
       assert.equal(messages[0].getRole(), "user");
       assert.equal(messages[1].getRole(), "assistant");
+    });
+  });
+
+  describe("manage messages with limit", function () {
+    beforeEach(function () {
+      this.conversation = new Conversation(3);
+    });
+    it("should have the specified limit", function () {
+      assert.equal(this.conversation.limit, 3);
+    });
+    it("should keep messages when under the limit", function () {
+      this.conversation.addMessage(new Message("user", "Message 1"));
+      this.conversation.addMessage(new Message("assistant", "Message 2"));
+      this.conversation.addMessage(new Message("user", "Message 3"));
+      const messages = this.conversation.getMessages();
+      assert.equal(messages.length, 3);
+    });
+    it("should remove oldest message when exceeding limit", function () {
+      this.conversation.addMessage(new Message("user", "Message 1"));
+      this.conversation.addMessage(new Message("assistant", "Message 2"));
+      this.conversation.addMessage(new Message("user", "Message 3"));
+      this.conversation.addMessage(new Message("assistant", "Message 4"));
+      const messages = this.conversation.getMessages();
+      assert.equal(messages.length, 3);
+      assert.equal(messages[0].getContent(), "Message 2");
+      assert.equal(messages[1].getContent(), "Message 3");
+      assert.equal(messages[2].getContent(), "Message 4");
+    });
+    it("should continue removing oldest messages as new ones are added", function () {
+      this.conversation.addMessage(new Message("user", "Message 1"));
+      this.conversation.addMessage(new Message("assistant", "Message 2"));
+      this.conversation.addMessage(new Message("user", "Message 3"));
+      this.conversation.addMessage(new Message("assistant", "Message 4"));
+      this.conversation.addMessage(new Message("user", "Message 5"));
+      const messages = this.conversation.getMessages();
+      assert.equal(messages.length, 3);
+      assert.equal(messages[0].getContent(), "Message 3");
+      assert.equal(messages[1].getContent(), "Message 4");
+      assert.equal(messages[2].getContent(), "Message 5");
     });
   });
 });

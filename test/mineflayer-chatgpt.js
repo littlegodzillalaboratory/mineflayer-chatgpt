@@ -30,7 +30,7 @@ describe("mineflayer-chatgpt", function () {
     });
     it("should set config when setConfig is called with opts", function () {
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123", { model: "gpt-4o" });
+      this.mockBot.chatgpt.setConfig("sk-123", { model: "gpt-4o", historySize: 20 });
     });
     it("should set config when setConfig is called without opts", function () {
       mineflayerChatgpt.chatgpt(this.mockBot);
