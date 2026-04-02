@@ -39,7 +39,7 @@ Set the configuration:
 
     const chatGptApiKey = 'sk-1234567890abcdef';
     bot.chatgpt.setConfig(chatGptApiKey, {
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-5.2',
       historySize: 20
     });
 

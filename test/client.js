@@ -15,7 +15,7 @@ describe("client", function () {
             create: function (params) {
               assert.equal(params.messages[1].role, "user");
               assert.equal(params.messages[1].content, "Hello");
-              assert.equal(params.model, "gpt-4o");
+              assert.equal(params.model, "gpt-5.2");
               return {
                 id: "compl-123",
                 choices: [{ message: { content: "Hi there!" } }],
@@ -95,9 +95,9 @@ describe("client", function () {
 
     it("should use custom model when provided in options", function () {
       const clientWithOpts = new Client("sk-test-key", {
-        model: "gpt-3.5-turbo",
+        model: "gpt-5.2",
       });
-      assert.equal(clientWithOpts.opts.model, "gpt-3.5-turbo");
+      assert.equal(clientWithOpts.opts.model, "gpt-5.2");
     });
 
     it("should use custom instructions when provided in options", function () {

@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add conversation history size setting
 
+### Changed
+- Change default model to gpt-5.2
+
 ## 1.0.0 - 2026-03-20
 ### Added
 - Add memory support to record conversations history between bot and players
