@@ -1,4 +1,6 @@
-test | /opt/hostedtoolcache/node/24.14.0/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
+(node:2422) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+test | /opt/hostedtoolcache/node/22.22.2/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
 
 [0m[0m
 [0m  client[0m
@@ -56,6 +58,8 @@ test | /opt/hostedtoolcache/node/24.14.0/x64/lib/node_modules/bob/node_modules/.
     [32m  [32m✔[39m[0m[90m should call client chat when sendMessage is called without error[0m
     [32m  [32m✔[39m[0m[90m should log error message when it is a generic error[0m
     [32m  [32m✔[39m[0m[90m should log error message when OpenAI error is rethrown by client[0m
+    [32m  [32m✔[39m[0m[90m should log reply when enableLogging is true[0m
+    [32m  [32m✔[39m[0m[90m should not log reply when enableLogging is false[0m
 
 [0m  moderator - sanitiseProfanity[0m
   [32m  [32m✔[39m[0m[90m should return clean text when input contains no profanity[0m
@@ -66,7 +70,7 @@ test | /opt/hostedtoolcache/node/24.14.0/x64/lib/node_modules/bob/node_modules/.
   [32m  [32m✔[39m[0m[90m should handle text with mixed case profanity[0m
 
 
-[92m [0m[32m 44 passing[0m[90m (38ms)[0m
+[92m [0m[32m 46 passing[0m[90m (36ms)[0m
 
 SUCCESS | exit code 0
 -----------------------|---------|----------|---------|---------|-------------------
