@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Plato - lib/mineflayer-chatgpt.js</title>
+  <title>Plato - lib/moderator.js</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
@@ -36,7 +36,7 @@
 
 <div class="jumbotron">
   <div class="container">
-    <h1>lib/mineflayer-chatgpt.js</h1>
+    <h1>lib/moderator.js</h1>
   </div>
 </div>
 
@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">70.20</p>
+      <p class="stat">92.82</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">40</p>
+      <p class="stat">13</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">23.63</p>
+      <p class="stat">10.29</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">0.22</p>
+      <p class="stat">0.04</p>
     </div>
   </div>
 </div>
@@ -89,46 +89,19 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
-import Client from &quot;./client.js&quot;;
-import Memory from &quot;./memory.js&quot;;
-import moderator from &quot;./moderator.js&quot;;
+    <textarea id="file-source" class="col-md-12">import leoProfanity from &#039;leo-profanity&#039;;
 
-let memory;
-
-function chatgpt(bot) {
-
-  let client;
-  let enableModeration;
-
-  bot.chatgpt = {};
-
-  bot.chatgpt.setConfig = (apiKey, opts) =&gt; {
-    opts = opts || {};
-    enableModeration = opts.enableModeration || true;
-    client = new Client(apiKey, opts);
-    memory = new Memory(opts.historySize);
-  };
-
-  bot.chatgpt.sendMessage = async (player, message) =&gt; {
-    try {
-      let reply = await client.chat(memory, player, message);
-      if (enableModeration === true) {
-        reply = moderator.sanitiseProfanity(reply);
-      }
-      return reply;
-    } catch (error) {
-      console.error(`An unexpected error has occurred: ${error.message}`);
-      throw error;
-    }
-  };
+function sanitiseProfanity(reply) {
+  return leoProfanity.clean(reply);
 }
 
 const exports = {
-  chatgpt: chatgpt,
+  sanitiseProfanity: sanitiseProfanity
 };
 
-export { exports as default };</textarea>
+export {
+  exports as default
+};</textarea>
   </div>
 </div>
 
