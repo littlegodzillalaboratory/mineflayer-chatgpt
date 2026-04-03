@@ -40,7 +40,8 @@ Set the configuration:
     const chatGptApiKey = 'sk-1234567890abcdef';
     bot.chatgpt.setConfig(chatGptApiKey, {
       model: 'gpt-5.2',
-      historySize: 20
+      historySize: 20,
+      enableModeration: true
     });
 
 Send a message to ChatGPT:
