@@ -96,5 +96,40 @@ describe("mineflayer-chatgpt", function () {
         );
       }
     });
+    it("should log reply when enableLogging is true", async function () {
+      this.mockClient
+        .expects("chat")
+        .once()
+        .withArgs(sinon.match.any, "someplayer", "Hello")
+        .returns("Hi there!");
+      this.mockConsole
+        .expects("log")
+        .once()
+        .withExactArgs("Player someplayer received a reply from ChatGPT: Hi there!");
+      mineflayerChatgpt.chatgpt(this.mockBot);
+      this.mockBot.chatgpt.setConfig("sk-123", { enableLogging: true });
+      const reply = await this.mockBot.chatgpt.sendMessage(
+        "someplayer",
+        "Hello",
+      );
+      assert.equal(reply, "Hi there!");
+    });
+    it("should not log reply when enableLogging is false", async function () {
+      this.mockClient
+        .expects("chat")
+        .once()
+        .withArgs(sinon.match.any, "someplayer", "Hello")
+        .returns("Hi there!");
+      this.mockConsole
+        .expects("log")
+        .never();
+      mineflayerChatgpt.chatgpt(this.mockBot);
+      this.mockBot.chatgpt.setConfig("sk-123", { enableLogging: false });
+      const reply = await this.mockBot.chatgpt.sendMessage(
+        "someplayer",
+        "Hello",
+      );
+      assert.equal(reply, "Hi there!");
+    });
   });
 });

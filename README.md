@@ -41,7 +41,8 @@ Set the configuration:
     bot.chatgpt.setConfig(chatGptApiKey, {
       model: 'gpt-5.2',
       historySize: 20,
-      enableModeration: true
+      enableModeration: true,
+      enableLogging: true
     });
 
 Send a message to ChatGPT:
