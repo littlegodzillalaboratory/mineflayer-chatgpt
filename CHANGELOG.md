@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Add conversation history size setting
-- Add enable reply moderation support
-- Add enable reply logging support
+- Add reply moderation and profanity sanitising support
+- Add reply logging support
 
 ### Changed
 - Change default model to gpt-5.2
