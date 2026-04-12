@@ -1,4 +1,6 @@
-test | /opt/hostedtoolcache/node/24.14.0/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
+(node:2503) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+test | /opt/hostedtoolcache/node/22.22.2/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
 
 [0m[0m
 [0m  client[0m
@@ -67,18 +69,23 @@ test | /opt/hostedtoolcache/node/24.14.0/x64/lib/node_modules/bob/node_modules/.
   [32m  [32m✔[39m[0m[90m should return empty string when input is empty[0m
   [32m  [32m✔[39m[0m[90m should handle text with mixed case profanity[0m
 
+[0m  moderator - moderateMessage[0m
+  [32m  [32m✔[39m[0m[90m should return unflagged result when content is safe[0m
+  [32m  [32m✔[39m[0m[90m should return flagged result when content violates policy[0m
+  [32m  [32m✔[39m[0m[90m should pass message to OpenAI moderation API[0m
 
-[92m [0m[32m 46 passing[0m[90m (35ms)[0m
+
+[92m [0m[32m 49 passing[0m[90m (40ms)[0m
 
 SUCCESS | exit code 0
 -----------------------|---------|----------|---------|---------|-------------------
 File                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -----------------------|---------|----------|---------|---------|-------------------
-All files              |     100 |      100 |     100 |     100 |                   
+All files              |   98.92 |    97.87 |     100 |   98.92 |                   
  client.js             |     100 |      100 |     100 |     100 |                   
  conversation.js       |     100 |      100 |     100 |     100 |                   
  memory.js             |     100 |      100 |     100 |     100 |                   
  message.js            |     100 |      100 |     100 |     100 |                   
- mineflayer-chatgpt.js |     100 |      100 |     100 |     100 |                   
+ mineflayer-chatgpt.js |      94 |    91.66 |     100 |      94 | 31-33             
  moderator.js          |     100 |      100 |     100 |     100 |                   
 -----------------------|---------|----------|---------|---------|-------------------
