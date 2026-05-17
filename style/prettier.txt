@@ -1,0 +1,12 @@
+[90mlib/client.js[39m 63ms (unchanged)
+[90mlib/conversation.js[39m 5ms (unchanged)
+[90mlib/memory.js[39m 6ms (unchanged)
+[90mlib/message.js[39m 3ms (unchanged)
+lib/mineflayer-chatgpt.js 11ms
+lib/moderator.js 6ms
+test/client.js 25ms
+[90mtest/conversation.js[39m 13ms (unchanged)
+test/memory.js 22ms
+[90mtest/message.js[39m 4ms (unchanged)
+test/mineflayer-chatgpt.js 28ms
+test/moderator.js 12ms

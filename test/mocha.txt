@@ -57,6 +57,7 @@
     [32m  [32m✔[39m[0m[90m should log error message when OpenAI error is rethrown by client[0m
     [32m  [32m✔[39m[0m[90m should log reply when enableLogging is true[0m
     [32m  [32m✔[39m[0m[90m should not log reply when enableLogging is false[0m
+    [32m  [32m✔[39m[0m[90m should return custom fallback message when moderation flags reply[0m
 
 [0m  moderator - sanitiseProfanity[0m
   [32m  [32m✔[39m[0m[90m should return clean text when input contains no profanity[0m
@@ -72,5 +73,5 @@
   [32m  [32m✔[39m[0m[90m should pass message to OpenAI moderation API[0m
 
 
-[92m [0m[32m 49 passing[0m[90m (41ms)[0m
+[92m [0m[32m 50 passing[0m[90m (37ms)[0m
 
