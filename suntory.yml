@@ -11,3 +11,4 @@ generator:
     author_email: blah+lgl@cliffano.com
     github_id: littlegodzillalaboratory
     github_repo: mineflayer-chatgpt
+    github_token_prefix: LITTLEGODZILLALABORATORY
