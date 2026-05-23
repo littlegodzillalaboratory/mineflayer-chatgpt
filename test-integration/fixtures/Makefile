@@ -1,7 +1,5 @@
 install-mineflayer-chatgpt:
-	cd ../../../../../examples/ && \
-		npm link && \
-		cd ../ && \
+	cd ../../../../../ && \
 		npm install && \
 		npm link mineflayer-chatgpt
 

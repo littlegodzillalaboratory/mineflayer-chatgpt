@@ -2,10 +2,6 @@
 set -o nounset
 set -o errexit
 
-printf "\n\n========================================\n"
-printf "Install dependencies of example bot:\n"
-npm link
-
 cd ../
 
 printf "\n\n========================================\n"
@@ -15,6 +11,8 @@ npm install
 printf "\n\n========================================\n"
 printf "Link Mineflayer ChatGPT:\n"
 npm link mineflayer-chatgpt
+
+cd examples/
 
 printf "\n\n========================================\n"
 printf "Start example bot:\n"
