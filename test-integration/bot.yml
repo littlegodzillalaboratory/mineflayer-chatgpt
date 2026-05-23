@@ -2,14 +2,14 @@
 - params:
     base: ../../../../..
 
+- description: Set up example bot environment
+  command: 'make -f {base}/test-integration/fixtures/Makefile install-mineflayer-chatgpt'
+  exitcode: 0
+  output: 'added .* package.*'
+
 - description: Start Minecraft server via container using Docker Compose
   command: 'make -f {base}/test-integration/fixtures/Makefile start-minecraft-server'
   exitcode: 0
-
-- description: Set up example bot environment
-  command: 'cd {base}/examples/ && ./setup.sh'
-  exitcode: 0
-  output: 'added .* package.*'
 
 - description: Allow Minecraft server to start
   command: 'sleep 120'
