@@ -84,14 +84,28 @@ describe("memory", function () {
     });
     it("should enforce size limit per player independently", function () {
       this.memory.register("someplayer", new Message("user", "Player1 Msg1"));
-      this.memory.register("someplayer", new Message("assistant", "Player1 Msg2"));
+      this.memory.register(
+        "someplayer",
+        new Message("assistant", "Player1 Msg2"),
+      );
       this.memory.register("someplayer", new Message("user", "Player1 Msg3"));
-      this.memory.register("someplayer", new Message("assistant", "Player1 Msg4"));
+      this.memory.register(
+        "someplayer",
+        new Message("assistant", "Player1 Msg4"),
+      );
       this.memory.initialize("anotherplayer");
-      this.memory.register("anotherplayer", new Message("user", "Player2 Msg1"));
-      this.memory.register("anotherplayer", new Message("assistant", "Player2 Msg2"));
+      this.memory.register(
+        "anotherplayer",
+        new Message("user", "Player2 Msg1"),
+      );
+      this.memory.register(
+        "anotherplayer",
+        new Message("assistant", "Player2 Msg2"),
+      );
       const player1Messages = this.memory.retrieve("someplayer").getMessages();
-      const player2Messages = this.memory.retrieve("anotherplayer").getMessages();
+      const player2Messages = this.memory
+        .retrieve("anotherplayer")
+        .getMessages();
       assert.equal(player1Messages.length, 3);
       assert.equal(player2Messages.length, 2);
       assert.equal(player1Messages[0].getContent(), "Player1 Msg2");

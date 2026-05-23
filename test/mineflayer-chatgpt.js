@@ -31,7 +31,11 @@ describe("mineflayer-chatgpt", function () {
     });
     it("should set config when setConfig is called with opts", function () {
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123", { model: "gpt-5.2", historySize: 20, enableModeration: true });
+      this.mockBot.chatgpt.setConfig("sk-123", {
+        model: "gpt-5.2",
+        historySize: 20,
+        enableModeration: true,
+      });
     });
     it("should set config when setConfig is called without opts", function () {
       mineflayerChatgpt.chatgpt(this.mockBot);
@@ -43,7 +47,9 @@ describe("mineflayer-chatgpt", function () {
         .once()
         .withArgs(sinon.match.any, "someplayer", "Hello")
         .returns("Hi there!");
-      const sanitiseStub = sinon.stub(moderator, "sanitiseProfanity").returns("Hi there!");
+      const sanitiseStub = sinon
+        .stub(moderator, "sanitiseProfanity")
+        .returns("Hi there!");
       const moderateStub = sinon.stub(moderator, "moderateMessage").resolves({
         flagged: false,
         categories: {},
@@ -115,7 +121,9 @@ describe("mineflayer-chatgpt", function () {
       this.mockConsole
         .expects("log")
         .once()
-        .withExactArgs("Player someplayer received a reply from ChatGPT: Hi there!");
+        .withExactArgs(
+          "Player someplayer received a reply from ChatGPT: Hi there!",
+        );
       sinon.stub(moderator, "sanitiseProfanity").returns("Hi there!");
       sinon.stub(moderator, "moderateMessage").resolves({
         flagged: false,
@@ -137,9 +145,7 @@ describe("mineflayer-chatgpt", function () {
         .once()
         .withArgs(sinon.match.any, "someplayer", "Hello")
         .returns("Hi there!");
-      this.mockConsole
-        .expects("log")
-        .never();
+      this.mockConsole.expects("log").never();
       sinon.stub(moderator, "sanitiseProfanity").returns("Hi there!");
       sinon.stub(moderator, "moderateMessage").resolves({
         flagged: false,
@@ -161,20 +167,28 @@ describe("mineflayer-chatgpt", function () {
         .once()
         .withArgs(sinon.match.any, "someplayer", "Hello")
         .returns("Some flagged content");
-      const sanitiseStub = sinon.stub(moderator, "sanitiseProfanity").returns("Some flagged content");
+      const sanitiseStub = sinon
+        .stub(moderator, "sanitiseProfanity")
+        .returns("Some flagged content");
       const moderation = {
         flagged: true,
         categories: { harassment: true },
         category_scores: { harassment: 0.9 },
         message: "Some flagged content",
       };
-      const moderateStub = sinon.stub(moderator, "moderateMessage").resolves(moderation);
+      const moderateStub = sinon
+        .stub(moderator, "moderateMessage")
+        .resolves(moderation);
       this.mockConsole
         .expects("warn")
         .once()
-        .withExactArgs(`Message flagged by moderation: ${JSON.stringify(moderation)}`);
+        .withExactArgs(
+          `Message flagged by moderation: ${JSON.stringify(moderation)}`,
+        );
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123", { fallbackMessage: "Custom fallback message" });
+      this.mockBot.chatgpt.setConfig("sk-123", {
+        fallbackMessage: "Custom fallback message",
+      });
       const reply = await this.mockBot.chatgpt.sendMessage(
         "someplayer",
         "Hello",

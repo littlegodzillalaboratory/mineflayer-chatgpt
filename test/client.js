@@ -112,7 +112,11 @@ describe("client", function () {
       this.mockOpenAI.chat.completions.create = function (params) {
         throw new OpenAI.APIError(
           400,
-          { type: "some type", code: "some code", message: "some openai error" },
+          {
+            type: "some type",
+            code: "some code",
+            message: "some openai error",
+          },
           "some openai error",
           { get: () => undefined },
         );
@@ -122,8 +126,11 @@ describe("client", function () {
         assert.fail("Expected an error to be thrown");
       } catch (error) {
         assert.ok(!(error instanceof OpenAI.APIError));
-        assert.equal(error.message, 'An OpenAI error has occurred: 400 some type some code 400 some openai error');
-        assert.ok(error.message.includes('An OpenAI error has occurred'));
+        assert.equal(
+          error.message,
+          "An OpenAI error has occurred: 400 some type some code 400 some openai error",
+        );
+        assert.ok(error.message.includes("An OpenAI error has occurred"));
       }
     });
   });

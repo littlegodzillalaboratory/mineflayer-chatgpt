@@ -24,7 +24,9 @@ describe("moderator - sanitiseProfanity", function () {
   });
 
   it("should handle multiple profane words", function () {
-    const result = moderator.sanitiseProfanity("Shit, the dogwater got clapped");
+    const result = moderator.sanitiseProfanity(
+      "Shit, the dogwater got clapped",
+    );
     assert.equals(result, "****, the ******** got *******");
   });
 
@@ -48,15 +50,20 @@ describe("moderator - moderateMessage", function () {
     const mockOpenAIClient = {
       moderations: {
         create: sinon.stub().resolves({
-          results: [{
-            flagged: false,
-            categories: { hate: false, violence: false, sexual: false },
-            category_scores: { hate: 0.01, violence: 0.02, sexual: 0.01 },
-          }],
+          results: [
+            {
+              flagged: false,
+              categories: { hate: false, violence: false, sexual: false },
+              category_scores: { hate: 0.01, violence: 0.02, sexual: 0.01 },
+            },
+          ],
         }),
       },
     };
-    const result = await moderator.moderateMessage(mockOpenAIClient, "Hello, how are you?");
+    const result = await moderator.moderateMessage(
+      mockOpenAIClient,
+      "Hello, how are you?",
+    );
     assert.isFalse(result.flagged);
     assert.equals(result.message, "Hello, how are you?");
     assert.isFalse(result.categories.hate);
@@ -66,15 +73,20 @@ describe("moderator - moderateMessage", function () {
     const mockOpenAIClient = {
       moderations: {
         create: sinon.stub().resolves({
-          results: [{
-            flagged: true,
-            categories: { hate: true, violence: false, sexual: false },
-            category_scores: { hate: 0.95, violence: 0.02, sexual: 0.01 },
-          }],
+          results: [
+            {
+              flagged: true,
+              categories: { hate: true, violence: false, sexual: false },
+              category_scores: { hate: 0.95, violence: 0.02, sexual: 0.01 },
+            },
+          ],
         }),
       },
     };
-    const result = await moderator.moderateMessage(mockOpenAIClient, "hateful message");
+    const result = await moderator.moderateMessage(
+      mockOpenAIClient,
+      "hateful message",
+    );
     assert.isTrue(result.flagged);
     assert.equals(result.message, "hateful message");
     assert.isTrue(result.categories.hate);
@@ -82,11 +94,13 @@ describe("moderator - moderateMessage", function () {
 
   it("should pass message to OpenAI moderation API", async function () {
     const createStub = sinon.stub().resolves({
-      results: [{
-        flagged: false,
-        categories: {},
-        category_scores: {},
-      }],
+      results: [
+        {
+          flagged: false,
+          categories: {},
+          category_scores: {},
+        },
+      ],
     });
     const mockOpenAIClient = {
       moderations: { create: createStub },
