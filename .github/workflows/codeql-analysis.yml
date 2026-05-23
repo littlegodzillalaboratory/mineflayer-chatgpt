@@ -19,6 +19,11 @@ jobs:
     name: Analyze
     runs-on: ubuntu-24.04
 
+    permissions:
+      security-events: read
+      actions: read
+      contents: read 
+
     strategy:
       fail-fast: false
       matrix:
