@@ -18,5 +18,3 @@ jobs:
       - run: npm install -g bob@5.0.1
       - run: npm install
       - run: bob publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.LITTLEGODZILLALABORATORY_NPMJS_TOKEN }}

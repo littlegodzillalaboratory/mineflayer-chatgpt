@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+- Fix publishing by switching to trusted publisher
+
 ## 1.1.1 - 2026-05-23
 ### Fixed
 - Fix publishing workflow token
