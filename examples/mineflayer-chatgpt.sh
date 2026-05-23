@@ -13,9 +13,9 @@ printf "Install dependencies of Mineflayer ChatGPT:\n"
 npm install
 
 printf "\n\n========================================\n"
-printf "Link local Mineflayer ChatGPT:\n"
+printf "Link Mineflayer ChatGPT:\n"
 npm link mineflayer-chatgpt
 
 printf "\n\n========================================\n"
 printf "Start example bot:\n"
-node bot.js
+node mineflayer-chatgpt-bot.js
