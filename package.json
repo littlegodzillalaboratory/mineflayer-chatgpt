@@ -3,9 +3,14 @@
   "type": "module",
   "description": "Mineflayer plugin for sending a message to OpenAI's ChatGPT",
   "keywords": [
-    "minecraft", "mineflayer", "chatgpt", "chat", "ai", "openai"
+    "minecraft",
+    "mineflayer",
+    "chatgpt",
+    "chat",
+    "ai",
+    "openai"
   ],
-  "version": "1.0.1-pre.0",
+  "version": "1.1.0",
   "homepage": "https://github.com/littlegodzillalaboratory/mineflayer-chatgpt",
   "author": "Little Godzilla Laboratory <blah+lgl@cliffano.com> (https://littlegodzillalaboratory.github.io/)",
   "contributors": [
