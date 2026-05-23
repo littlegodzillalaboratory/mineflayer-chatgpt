@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: main
+          ref: 1.1.1
       - uses: actions/setup-node@v6
         with:
           node-version: '26'
