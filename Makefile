@@ -1,4 +1,4 @@
-SUNTORY_VERSION = 0.11.2
+SUNTORY_VERSION = 0.12.0
 
 ################################################################
 # User configuration variables
@@ -70,6 +70,7 @@ update-dotfiles: GENERATOR_INPUTS_AUTHOR_EMAIL = $(shell yq .generator.inputs.au
 update-dotfiles: GENERATOR_INPUTS_AUTHOR_URL = $(shell yq .generator.inputs.author_url suntory.yml)
 update-dotfiles: GENERATOR_INPUTS_GITHUB_ID = $(shell yq .generator.inputs.github_id suntory.yml)
 update-dotfiles: GENERATOR_INPUTS_GITHUB_REPO = $(shell yq .generator.inputs.github_repo suntory.yml)
+update-dotfiles: GENERATOR_INPUTS_GITHUB_TOKEN_PREFIX = $(shell yq .generator.inputs.github_token_prefix suntory.yml)
 update-dotfiles: stage
 	cd stage/ && \
 	  rm -rf generator-node/ && \
@@ -84,7 +85,8 @@ update-dotfiles: stage
 		--author_email "$(GENERATOR_INPUTS_AUTHOR_EMAIL)" \
 		--author_url "$(GENERATOR_INPUTS_AUTHOR_URL)" \
 		--github_id "$(GENERATOR_INPUTS_GITHUB_ID)" \
-		--github_repo "$(GENERATOR_INPUTS_GITHUB_REPO)"
+		--github_repo "$(GENERATOR_INPUTS_GITHUB_REPO)" \
+		--github_token_prefix "$(GENERATOR_INPUTS_GITHUB_TOKEN_PREFIX)"
 	cd stage/generator-node/stage/$(GENERATOR_COMPONENT) && \
 	  cp -R .github/. ../../../../.github/ && \
 	  cp .bob.json ../../../../.bob.json && \
