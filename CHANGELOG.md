@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add prompt leakage detection
 - Add jailbreak detection
 - Add secrets and credentials detection
+- Add instruction for Minecraft-relevancy
 
 ### Changed
 - Rename enableLogging to enableMessageLogging
