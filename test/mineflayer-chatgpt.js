@@ -71,6 +71,17 @@ describe("mineflayer-chatgpt", function () {
       assert.equal(reply, "Hi there!");
       assert.equal(moderateOutboundStub.calledOnce, true);
       assert.equal(moderateInboundStub.calledOnce, true);
+      assert.equal(
+        moderateOutboundStub.calledWith(
+          sinon.match.any,
+          sinon.match.any,
+          "someplayer",
+          "Hello",
+          "Sorry, I cannot provide a response to that message.",
+          15,
+        ),
+        true,
+      );
     });
     it("should log error message when it is a generic error", async function () {
       this.mockConsole
@@ -399,6 +410,48 @@ describe("mineflayer-chatgpt", function () {
           sinon.match.string,
           0.85,
           0.8,
+        ),
+        true,
+      );
+    });
+
+    it("should use custom coolDownInSeconds when provided", async function () {
+      this.mockClient
+        .expects("chat")
+        .once()
+        .withArgs(sinon.match.any, "someplayer", "Hello")
+        .returns({
+          reply: "Hi there!",
+          confidenceScore: 0.99,
+        });
+      const moderateOutboundStub = sinon
+        .stub(moderator, "moderateOutboundMessage")
+        .resolves({
+          message: "Hello",
+          flagged: false,
+        });
+      sinon.stub(moderator, "moderateInboundReply").resolves({
+        reply: "Hi there!",
+        flagged: false,
+      });
+      this.mockConsole.expects("warn").never();
+      mineflayerChatgpt.chatgpt(this.mockBot);
+      this.mockBot.chatgpt.setConfig("sk-123", {
+        coolDownInSeconds: 30,
+      });
+      const reply = await this.mockBot.chatgpt.sendMessage(
+        "someplayer",
+        "Hello",
+      );
+      assert.equal(reply, "Hi there!");
+      assert.equal(
+        moderateOutboundStub.calledWith(
+          sinon.match.any,
+          sinon.match.any,
+          "someplayer",
+          "Hello",
+          "Sorry, I cannot provide a response to that message.",
+          30,
         ),
         true,
       );

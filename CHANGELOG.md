@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add instruction for Minecraft-relevancy
 - Add reply confidence score threshold check
 - Add timestamp capturing in messages
+- Add cooldown period support to prevent abuse
 
 ### Changed
 - Rename enableLogging to enableMessageLogging
