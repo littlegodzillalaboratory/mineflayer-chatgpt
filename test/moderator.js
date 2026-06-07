@@ -76,7 +76,177 @@ describe("moderator - detectSlashCommand", function () {
   });
 });
 
-describe("moderator - moderateMessage", function () {
+describe("moderator - moderateOutboundMessage", function () {
+  afterEach(function () {
+    sinon.restore();
+  });
+
+  it("should return sanitised message when outbound message is safe", async function () {
+    const mockOpenAIClient = {
+      moderations: {
+        create: sinon.stub().resolves({
+          results: [
+            {
+              flagged: false,
+              categories: {},
+              category_scores: {},
+            },
+          ],
+        }),
+      },
+    };
+
+    const result = await moderator.moderateOutboundMessage(
+      mockOpenAIClient,
+      "You got clapped",
+      "fallback",
+    );
+    assert.equals(result.message, "You got *******");
+    assert.isFalse(result.flagged);
+  });
+
+  it("should return fallback message when outbound message is flagged", async function () {
+    const mockOpenAIClient = {
+      moderations: {
+        create: sinon.stub().resolves({
+          results: [
+            {
+              flagged: true,
+              categories: { harassment: true },
+              category_scores: { harassment: 0.9 },
+            },
+          ],
+        }),
+      },
+    };
+    const consoleWarnStub = sinon.stub(console, "warn");
+
+    const result = await moderator.moderateOutboundMessage(
+      mockOpenAIClient,
+      "some flagged input",
+      "fallback",
+    );
+    assert.equals(result.message, "fallback");
+    assert.isTrue(result.flagged);
+    assert.isTrue(consoleWarnStub.calledOnce);
+  });
+});
+
+describe("moderator - moderateInboundReply", function () {
+  afterEach(function () {
+    sinon.restore();
+  });
+
+  it("should return sanitised reply when inbound reply is safe", async function () {
+    const mockOpenAIClient = {
+      moderations: {
+        create: sinon.stub().resolves({
+          results: [
+            {
+              flagged: false,
+              categories: {},
+              category_scores: {},
+            },
+          ],
+        }),
+      },
+    };
+
+    const result = await moderator.moderateInboundReply(
+      mockOpenAIClient,
+      "You got clapped",
+      "fallback",
+    );
+    assert.equals(result.reply, "You got *******");
+    assert.isFalse(result.flagged);
+  });
+
+  it("should return fallback when reply contains prompt leakage", async function () {
+    const mockOpenAIClient = {
+      moderations: {
+        create: sinon.stub().resolves({
+          results: [
+            {
+              flagged: false,
+              categories: {},
+              category_scores: {},
+            },
+          ],
+        }),
+      },
+    };
+    const consoleWarnStub = sinon.stub(console, "warn");
+
+    const result = await moderator.moderateInboundReply(
+      mockOpenAIClient,
+      "Keep responses concise.",
+      "fallback",
+    );
+    assert.equals(result.reply, "fallback");
+    assert.isTrue(result.flagged);
+    assert.isTrue(
+      consoleWarnStub.calledWith(
+        "Reply contains prompt leakage: Keep responses concise.",
+      ),
+    );
+  });
+
+  it("should return fallback when reply contains slash command", async function () {
+    const mockOpenAIClient = {
+      moderations: {
+        create: sinon.stub().resolves({
+          results: [
+            {
+              flagged: false,
+              categories: {},
+              category_scores: {},
+            },
+          ],
+        }),
+      },
+    };
+    const consoleWarnStub = sinon.stub(console, "warn");
+
+    const result = await moderator.moderateInboundReply(
+      mockOpenAIClient,
+      "Use /kill @e",
+      "fallback",
+    );
+    assert.equals(result.reply, "fallback");
+    assert.isTrue(result.flagged);
+    assert.isTrue(
+      consoleWarnStub.calledWith("Reply contains a slash command: Use /kill @e"),
+    );
+  });
+
+  it("should return fallback when reply is flagged by moderation", async function () {
+    const mockOpenAIClient = {
+      moderations: {
+        create: sinon.stub().resolves({
+          results: [
+            {
+              flagged: true,
+              categories: { harassment: true },
+              category_scores: { harassment: 0.9 },
+            },
+          ],
+        }),
+      },
+    };
+    const consoleWarnStub = sinon.stub(console, "warn");
+
+    const result = await moderator.moderateInboundReply(
+      mockOpenAIClient,
+      "some flagged reply",
+      "fallback",
+    );
+    assert.equals(result.reply, "fallback");
+    assert.isTrue(result.flagged);
+    assert.isTrue(consoleWarnStub.calledOnce);
+  });
+});
+
+describe("moderator - moderateUsingOpenAI", function () {
   afterEach(function () {
     sinon.restore();
   });
@@ -95,7 +265,7 @@ describe("moderator - moderateMessage", function () {
         }),
       },
     };
-    const result = await moderator.moderateMessage(
+    const result = await moderator.moderateUsingOpenAI(
       mockOpenAIClient,
       "Hello, how are you?",
     );
@@ -118,7 +288,7 @@ describe("moderator - moderateMessage", function () {
         }),
       },
     };
-    const result = await moderator.moderateMessage(
+    const result = await moderator.moderateUsingOpenAI(
       mockOpenAIClient,
       "hateful message",
     );
@@ -140,7 +310,7 @@ describe("moderator - moderateMessage", function () {
     const mockOpenAIClient = {
       moderations: { create: createStub },
     };
-    await moderator.moderateMessage(mockOpenAIClient, "test message");
+    await moderator.moderateUsingOpenAI(mockOpenAIClient, "test message");
     assert.isTrue(createStub.calledWith({ input: "test message" }));
   });
 });

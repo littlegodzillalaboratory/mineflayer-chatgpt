@@ -47,33 +47,17 @@ describe("mineflayer-chatgpt", function () {
         .once()
         .withArgs(sinon.match.any, "someplayer", "Hello")
         .returns("Hi there!");
-      const sanitiseStub = sinon
-        .stub(moderator, "sanitiseProfanity")
-        .onFirstCall()
-        .returns("Hello")
-        .onSecondCall()
-        .returns("Hi there!");
-      const detectSlashCommandStub = sinon
-        .stub(moderator, "detectSlashCommand")
-        .returns(false);
-      const detectPromptLeakageStub = sinon
-        .stub(moderator, "detectPromptLeakage")
-        .returns(false);
-      const moderateStub = sinon
-        .stub(moderator, "moderateMessage")
-        .onFirstCall()
+      const moderateOutboundStub = sinon
+        .stub(moderator, "moderateOutboundMessage")
         .resolves({
-          flagged: false,
-          categories: {},
-          category_scores: {},
           message: "Hello",
-        })
-        .onSecondCall()
-        .resolves({
           flagged: false,
-          categories: {},
-          category_scores: {},
-          message: "Hi there!",
+        });
+      const moderateInboundStub = sinon
+        .stub(moderator, "moderateInboundReply")
+        .resolves({
+          reply: "Hi there!",
+          flagged: false,
         });
       mineflayerChatgpt.chatgpt(this.mockBot);
       this.mockBot.chatgpt.setConfig("sk-123");
@@ -82,10 +66,8 @@ describe("mineflayer-chatgpt", function () {
         "Hello",
       );
       assert.equal(reply, "Hi there!");
-      assert.equal(sanitiseStub.calledTwice, true);
-      assert.equal(detectPromptLeakageStub.calledOnce, true);
-      assert.equal(detectSlashCommandStub.calledOnce, true);
-      assert.equal(moderateStub.calledTwice, true);
+      assert.equal(moderateOutboundStub.calledOnce, true);
+      assert.equal(moderateInboundStub.calledOnce, true);
     });
     it("should log error message when it is a generic error", async function () {
       this.mockConsole
@@ -97,14 +79,9 @@ describe("mineflayer-chatgpt", function () {
         .once()
         .withArgs(sinon.match.any, "someplayer", "Hello")
         .throws(new Error("some error"));
-      sinon.stub(moderator, "sanitiseProfanity").returns("Hello");
-      sinon.stub(moderator, "detectPromptLeakage").returns(false);
-      sinon.stub(moderator, "detectSlashCommand").returns(false);
-      sinon.stub(moderator, "moderateMessage").resolves({
-        flagged: false,
-        categories: {},
-        category_scores: {},
+      sinon.stub(moderator, "moderateOutboundMessage").resolves({
         message: "Hello",
+        flagged: false,
       });
       mineflayerChatgpt.chatgpt(this.mockBot);
       this.mockBot.chatgpt.setConfig("sk-123");
@@ -130,14 +107,9 @@ describe("mineflayer-chatgpt", function () {
         .once()
         .withArgs(sinon.match.any, "someplayer", "Hello")
         .throws(wrappedError);
-      sinon.stub(moderator, "sanitiseProfanity").returns("Hello");
-      sinon.stub(moderator, "detectPromptLeakage").returns(false);
-      sinon.stub(moderator, "detectSlashCommand").returns(false);
-      sinon.stub(moderator, "moderateMessage").resolves({
-        flagged: false,
-        categories: {},
-        category_scores: {},
+      sinon.stub(moderator, "moderateOutboundMessage").resolves({
         message: "Hello",
+        flagged: false,
       });
       mineflayerChatgpt.chatgpt(this.mockBot);
       this.mockBot.chatgpt.setConfig("sk-123");
@@ -163,34 +135,14 @@ describe("mineflayer-chatgpt", function () {
         .withExactArgs(
           "Player someplayer received a reply from ChatGPT: Hi there!",
         );
-      sinon
-        .stub(moderator, "sanitiseProfanity")
-        .onFirstCall()
-        .returns("Hello")
-        .onSecondCall()
-        .returns("Hi there!");
-      sinon
-        .stub(moderator, "detectPromptLeakage")
-        .returns(false);
-      sinon
-        .stub(moderator, "detectSlashCommand")
-        .returns(false);
-      sinon
-        .stub(moderator, "moderateMessage")
-        .onFirstCall()
-        .resolves({
-          flagged: false,
-          categories: {},
-          category_scores: {},
-          message: "Hello",
-        })
-        .onSecondCall()
-        .resolves({
-          flagged: false,
-          categories: {},
-          category_scores: {},
-          message: "Hi there!",
-        });
+      sinon.stub(moderator, "moderateOutboundMessage").resolves({
+        message: "Hello",
+        flagged: false,
+      });
+      sinon.stub(moderator, "moderateInboundReply").resolves({
+        reply: "Hi there!",
+        flagged: false,
+      });
       mineflayerChatgpt.chatgpt(this.mockBot);
       this.mockBot.chatgpt.setConfig("sk-123", {
         enableMessageLogging: true,
@@ -208,34 +160,14 @@ describe("mineflayer-chatgpt", function () {
         .withArgs(sinon.match.any, "someplayer", "Hello")
         .returns("Hi there!");
       this.mockConsole.expects("log").never();
-      sinon
-        .stub(moderator, "sanitiseProfanity")
-        .onFirstCall()
-        .returns("Hello")
-        .onSecondCall()
-        .returns("Hi there!");
-      sinon
-        .stub(moderator, "detectPromptLeakage")
-        .returns(false);
-      sinon
-        .stub(moderator, "detectSlashCommand")
-        .returns(false);
-      sinon
-        .stub(moderator, "moderateMessage")
-        .onFirstCall()
-        .resolves({
-          flagged: false,
-          categories: {},
-          category_scores: {},
-          message: "Hello",
-        })
-        .onSecondCall()
-        .resolves({
-          flagged: false,
-          categories: {},
-          category_scores: {},
-          message: "Hi there!",
-        });
+      sinon.stub(moderator, "moderateOutboundMessage").resolves({
+        message: "Hello",
+        flagged: false,
+      });
+      sinon.stub(moderator, "moderateInboundReply").resolves({
+        reply: "Hi there!",
+        flagged: false,
+      });
       mineflayerChatgpt.chatgpt(this.mockBot);
       this.mockBot.chatgpt.setConfig("sk-123", {
         enableMessageLogging: false,
@@ -252,41 +184,19 @@ describe("mineflayer-chatgpt", function () {
         .once()
         .withArgs(sinon.match.any, "someplayer", "Hello")
         .returns("Some flagged content");
-      const sanitiseStub = sinon
-        .stub(moderator, "sanitiseProfanity")
-        .onFirstCall()
-        .returns("Hello")
-        .onSecondCall()
-        .returns("Some flagged content");
-      const detectSlashCommandStub = sinon
-        .stub(moderator, "detectSlashCommand")
-        .returns(false);
-      const detectPromptLeakageStub = sinon
-        .stub(moderator, "detectPromptLeakage")
-        .returns(false);
-      const flaggedReplyModeration = {
-        flagged: true,
-        categories: { harassment: true },
-        category_scores: { harassment: 0.9 },
-        message: "Some flagged content",
-      };
-      const moderateStub = sinon
-        .stub(moderator, "moderateMessage")
-        .onFirstCall()
+      const moderateOutboundStub = sinon
+        .stub(moderator, "moderateOutboundMessage")
         .resolves({
-          flagged: false,
-          categories: {},
-          category_scores: {},
           message: "Hello",
-        })
-        .onSecondCall()
-        .resolves(flaggedReplyModeration);
-      this.mockConsole
-        .expects("warn")
-        .once()
-        .withExactArgs(
-          `Reply flagged by moderation: ${JSON.stringify(flaggedReplyModeration)}`,
-        );
+          flagged: false,
+        });
+      const moderateInboundStub = sinon
+        .stub(moderator, "moderateInboundReply")
+        .resolves({
+          reply: "Custom fallback message",
+          flagged: true,
+        });
+      this.mockConsole.expects("warn").never();
       mineflayerChatgpt.chatgpt(this.mockBot);
       this.mockBot.chatgpt.setConfig("sk-123", {
         fallbackMessage: "Custom fallback message",
@@ -296,39 +206,18 @@ describe("mineflayer-chatgpt", function () {
         "Hello",
       );
       assert.equal(reply, "Custom fallback message");
-      assert.equal(sanitiseStub.calledTwice, true);
-      assert.equal(detectPromptLeakageStub.calledOnce, true);
-      assert.equal(detectSlashCommandStub.calledOnce, true);
-      assert.equal(moderateStub.calledTwice, true);
+      assert.equal(moderateOutboundStub.calledOnce, true);
+      assert.equal(moderateInboundStub.calledOnce, true);
     });
     it("should return custom fallback message when moderation flags message", async function () {
       this.mockClient.expects("chat").never();
-      const sanitiseStub = sinon
-        .stub(moderator, "sanitiseProfanity")
-        .returns("Some flagged input");
-      const detectSlashCommandStub = sinon.stub(
-        moderator,
-        "detectSlashCommand",
-      );
-      const detectPromptLeakageStub = sinon.stub(
-        moderator,
-        "detectPromptLeakage",
-      );
-      const flaggedMessageModeration = {
-        flagged: true,
-        categories: { harassment: true },
-        category_scores: { harassment: 0.9 },
-        message: "Some flagged input",
-      };
-      const moderateStub = sinon
-        .stub(moderator, "moderateMessage")
-        .resolves(flaggedMessageModeration);
-      this.mockConsole
-        .expects("warn")
-        .once()
-        .withExactArgs(
-          `Message flagged by moderation: ${JSON.stringify(flaggedMessageModeration)}`,
-        );
+      const moderateOutboundStub = sinon
+        .stub(moderator, "moderateOutboundMessage")
+        .resolves({
+          message: "Custom fallback message",
+          flagged: true,
+        });
+      const moderateInboundStub = sinon.stub(moderator, "moderateInboundReply");
       mineflayerChatgpt.chatgpt(this.mockBot);
       this.mockBot.chatgpt.setConfig("sk-123", {
         fallbackMessage: "Custom fallback message",
@@ -338,10 +227,8 @@ describe("mineflayer-chatgpt", function () {
         "Hello",
       );
       assert.equal(reply, "Custom fallback message");
-      assert.equal(sanitiseStub.calledOnce, true);
-      assert.equal(detectPromptLeakageStub.notCalled, true);
-      assert.equal(detectSlashCommandStub.notCalled, true);
-      assert.equal(moderateStub.calledOnce, true);
+      assert.equal(moderateOutboundStub.calledOnce, true);
+      assert.equal(moderateInboundStub.notCalled, true);
     });
 
     it("should return custom fallback message when reply contains slash command", async function () {
@@ -350,31 +237,19 @@ describe("mineflayer-chatgpt", function () {
         .once()
         .withArgs(sinon.match.any, "someplayer", "Hello")
         .returns("Use /kill @e");
-      const sanitiseStub = sinon
-        .stub(moderator, "sanitiseProfanity")
-        .onFirstCall()
-        .returns("Hello")
-        .onSecondCall()
-        .returns("Use /kill @e");
-      const detectSlashCommandStub = sinon
-        .stub(moderator, "detectSlashCommand")
-        .returns(true);
-      const detectPromptLeakageStub = sinon
-        .stub(moderator, "detectPromptLeakage")
-        .returns(false);
-      const moderateStub = sinon
-        .stub(moderator, "moderateMessage")
-        .onFirstCall()
+      const moderateOutboundStub = sinon
+        .stub(moderator, "moderateOutboundMessage")
         .resolves({
-          flagged: false,
-          categories: {},
-          category_scores: {},
           message: "Hello",
+          flagged: false,
         });
-      this.mockConsole
-        .expects("warn")
-        .once()
-        .withExactArgs("Reply contains a slash command: Use /kill @e");
+      const moderateInboundStub = sinon
+        .stub(moderator, "moderateInboundReply")
+        .resolves({
+          reply: "Custom fallback message",
+          flagged: true,
+        });
+      this.mockConsole.expects("warn").never();
       mineflayerChatgpt.chatgpt(this.mockBot);
       this.mockBot.chatgpt.setConfig("sk-123", {
         fallbackMessage: "Custom fallback message",
@@ -384,10 +259,8 @@ describe("mineflayer-chatgpt", function () {
         "Hello",
       );
       assert.equal(reply, "Custom fallback message");
-      assert.equal(sanitiseStub.calledTwice, true);
-      assert.equal(detectPromptLeakageStub.calledOnce, true);
-      assert.equal(detectSlashCommandStub.calledOnce, true);
-      assert.equal(moderateStub.calledOnce, true);
+      assert.equal(moderateOutboundStub.calledOnce, true);
+      assert.equal(moderateInboundStub.calledOnce, true);
     });
 
     it("should return custom fallback message when reply contains prompt leakage", async function () {
@@ -396,29 +269,19 @@ describe("mineflayer-chatgpt", function () {
         .once()
         .withArgs(sinon.match.any, "someplayer", "Hello")
         .returns("Keep responses concise.");
-      const sanitiseStub = sinon
-        .stub(moderator, "sanitiseProfanity")
-        .onFirstCall()
-        .returns("Hello")
-        .onSecondCall()
-        .returns("Keep responses concise.");
-      const detectPromptLeakageStub = sinon
-        .stub(moderator, "detectPromptLeakage")
-        .returns(true);
-      const detectSlashCommandStub = sinon.stub(moderator, "detectSlashCommand");
-      const moderateStub = sinon
-        .stub(moderator, "moderateMessage")
-        .onFirstCall()
+      const moderateOutboundStub = sinon
+        .stub(moderator, "moderateOutboundMessage")
         .resolves({
-          flagged: false,
-          categories: {},
-          category_scores: {},
           message: "Hello",
+          flagged: false,
         });
-      this.mockConsole
-        .expects("warn")
-        .once()
-        .withExactArgs("Reply contains prompt leakage: Keep responses concise.");
+      const moderateInboundStub = sinon
+        .stub(moderator, "moderateInboundReply")
+        .resolves({
+          reply: "Custom fallback message",
+          flagged: true,
+        });
+      this.mockConsole.expects("warn").never();
       mineflayerChatgpt.chatgpt(this.mockBot);
       this.mockBot.chatgpt.setConfig("sk-123", {
         fallbackMessage: "Custom fallback message",
@@ -428,10 +291,8 @@ describe("mineflayer-chatgpt", function () {
         "Hello",
       );
       assert.equal(reply, "Custom fallback message");
-      assert.equal(sanitiseStub.calledTwice, true);
-      assert.equal(detectPromptLeakageStub.calledOnce, true);
-      assert.equal(detectSlashCommandStub.notCalled, true);
-      assert.equal(moderateStub.calledOnce, true);
+      assert.equal(moderateOutboundStub.calledOnce, true);
+      assert.equal(moderateInboundStub.calledOnce, true);
     });
   });
 });
