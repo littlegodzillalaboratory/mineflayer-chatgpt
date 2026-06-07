@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add secrets and credentials detection
 - Add instruction for Minecraft-relevancy
 - Add reply confidence score threshold check
+- Add timestamp capturing in messages
 
 ### Changed
 - Rename enableLogging to enableMessageLogging

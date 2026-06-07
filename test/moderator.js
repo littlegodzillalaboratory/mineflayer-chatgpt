@@ -401,7 +401,9 @@ describe("moderator - moderateInboundReply", function () {
     assert.equals(result.reply, "fallback");
     assert.isTrue(result.flagged);
     assert.isTrue(
-      consoleWarnStub.calledWith("Reply contains a slash command: Use /kill @e"),
+      consoleWarnStub.calledWith(
+        "Reply contains a slash command: Use /kill @e",
+      ),
     );
   });
 

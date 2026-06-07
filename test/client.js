@@ -47,10 +47,7 @@ describe("client", function () {
           content: "Hi there!",
         },
         logprobs: {
-          content: [
-            { logprob: -0.1 },
-            { logprob: -0.2 },
-          ],
+          content: [{ logprob: -0.1 }, { logprob: -0.2 }],
         },
       });
       assert.ok(score > 0 && score < 1);

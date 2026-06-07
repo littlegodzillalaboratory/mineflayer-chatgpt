@@ -341,7 +341,10 @@ describe("mineflayer-chatgpt", function () {
         "someplayer",
         "Hello",
       );
-      assert.equal(reply, "Sorry, I cannot provide a response to that message.");
+      assert.equal(
+        reply,
+        "Sorry, I cannot provide a response to that message.",
+      );
       assert.equal(moderateOutboundStub.calledOnce, true);
       assert.equal(moderateInboundStub.calledOnce, true);
       assert.equal(
