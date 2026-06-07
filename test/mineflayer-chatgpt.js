@@ -53,6 +53,9 @@ describe("mineflayer-chatgpt", function () {
         .returns("Hello")
         .onSecondCall()
         .returns("Hi there!");
+      const detectSlashCommandStub = sinon
+        .stub(moderator, "detectSlashCommand")
+        .returns(false);
       const moderateStub = sinon
         .stub(moderator, "moderateMessage")
         .onFirstCall()
@@ -77,6 +80,7 @@ describe("mineflayer-chatgpt", function () {
       );
       assert.equal(reply, "Hi there!");
       assert.equal(sanitiseStub.calledTwice, true);
+      assert.equal(detectSlashCommandStub.calledOnce, true);
       assert.equal(moderateStub.calledTwice, true);
     });
     it("should log error message when it is a generic error", async function () {
@@ -90,6 +94,7 @@ describe("mineflayer-chatgpt", function () {
         .withArgs(sinon.match.any, "someplayer", "Hello")
         .throws(new Error("some error"));
       sinon.stub(moderator, "sanitiseProfanity").returns("Hello");
+      sinon.stub(moderator, "detectSlashCommand").returns(false);
       sinon.stub(moderator, "moderateMessage").resolves({
         flagged: false,
         categories: {},
@@ -121,6 +126,7 @@ describe("mineflayer-chatgpt", function () {
         .withArgs(sinon.match.any, "someplayer", "Hello")
         .throws(wrappedError);
       sinon.stub(moderator, "sanitiseProfanity").returns("Hello");
+      sinon.stub(moderator, "detectSlashCommand").returns(false);
       sinon.stub(moderator, "moderateMessage").resolves({
         flagged: false,
         categories: {},
@@ -157,6 +163,9 @@ describe("mineflayer-chatgpt", function () {
         .returns("Hello")
         .onSecondCall()
         .returns("Hi there!");
+      sinon
+        .stub(moderator, "detectSlashCommand")
+        .returns(false);
       sinon
         .stub(moderator, "moderateMessage")
         .onFirstCall()
@@ -197,6 +206,9 @@ describe("mineflayer-chatgpt", function () {
         .onSecondCall()
         .returns("Hi there!");
       sinon
+        .stub(moderator, "detectSlashCommand")
+        .returns(false);
+      sinon
         .stub(moderator, "moderateMessage")
         .onFirstCall()
         .resolves({
@@ -234,6 +246,9 @@ describe("mineflayer-chatgpt", function () {
         .returns("Hello")
         .onSecondCall()
         .returns("Some flagged content");
+      const detectSlashCommandStub = sinon
+        .stub(moderator, "detectSlashCommand")
+        .returns(false);
       const flaggedReplyModeration = {
         flagged: true,
         categories: { harassment: true },
@@ -267,6 +282,7 @@ describe("mineflayer-chatgpt", function () {
       );
       assert.equal(reply, "Custom fallback message");
       assert.equal(sanitiseStub.calledTwice, true);
+      assert.equal(detectSlashCommandStub.calledOnce, true);
       assert.equal(moderateStub.calledTwice, true);
     });
     it("should return custom fallback message when moderation flags message", async function () {
@@ -274,6 +290,10 @@ describe("mineflayer-chatgpt", function () {
       const sanitiseStub = sinon
         .stub(moderator, "sanitiseProfanity")
         .returns("Some flagged input");
+      const detectSlashCommandStub = sinon.stub(
+        moderator,
+        "detectSlashCommand",
+      );
       const flaggedMessageModeration = {
         flagged: true,
         categories: { harassment: true },
@@ -299,6 +319,49 @@ describe("mineflayer-chatgpt", function () {
       );
       assert.equal(reply, "Custom fallback message");
       assert.equal(sanitiseStub.calledOnce, true);
+      assert.equal(detectSlashCommandStub.notCalled, true);
+      assert.equal(moderateStub.calledOnce, true);
+    });
+
+    it("should return custom fallback message when reply contains slash command", async function () {
+      this.mockClient
+        .expects("chat")
+        .once()
+        .withArgs(sinon.match.any, "someplayer", "Hello")
+        .returns("Use /kill @e");
+      const sanitiseStub = sinon
+        .stub(moderator, "sanitiseProfanity")
+        .onFirstCall()
+        .returns("Hello")
+        .onSecondCall()
+        .returns("Use /kill @e");
+      const detectSlashCommandStub = sinon
+        .stub(moderator, "detectSlashCommand")
+        .returns(true);
+      const moderateStub = sinon
+        .stub(moderator, "moderateMessage")
+        .onFirstCall()
+        .resolves({
+          flagged: false,
+          categories: {},
+          category_scores: {},
+          message: "Hello",
+        });
+      this.mockConsole
+        .expects("warn")
+        .once()
+        .withExactArgs("Reply contains a slash command: Use /kill @e");
+      mineflayerChatgpt.chatgpt(this.mockBot);
+      this.mockBot.chatgpt.setConfig("sk-123", {
+        fallbackMessage: "Custom fallback message",
+      });
+      const reply = await this.mockBot.chatgpt.sendMessage(
+        "someplayer",
+        "Hello",
+      );
+      assert.equal(reply, "Custom fallback message");
+      assert.equal(sanitiseStub.calledTwice, true);
+      assert.equal(detectSlashCommandStub.calledOnce, true);
       assert.equal(moderateStub.calledOnce, true);
     });
   });

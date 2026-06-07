@@ -41,6 +41,28 @@ describe("moderator - sanitiseProfanity", function () {
   });
 });
 
+describe("moderator - detectSlashCommand", function () {
+  it("should detect a command-only message", function () {
+    const result = moderator.detectSlashCommand("/help");
+    assert.isTrue(result);
+  });
+
+  it("should detect a command with arguments", function () {
+    const result = moderator.detectSlashCommand("/tp someplayer 10 64 10");
+    assert.isTrue(result);
+  });
+
+  it("should detect command token in a sentence", function () {
+    const result = moderator.detectSlashCommand("please use /spawn now");
+    assert.isTrue(result);
+  });
+
+  it("should return false when no slash command is present", function () {
+    const result = moderator.detectSlashCommand("Hello, how are you?");
+    assert.isFalse(result);
+  });
+});
+
 describe("moderator - moderateMessage", function () {
   afterEach(function () {
     sinon.restore();
