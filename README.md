@@ -49,6 +49,16 @@ Send a message to ChatGPT:
 
 ## Configuration
 
+| Property | Type | Required | Default | Description | Example |
+|----------|------|----------|---------|-------------|---------|
+| model | string | No | gpt-5.2 | Chat completion model name. | gpt-4.1-mini |
+| instructions | string | No | You are a helpful assistant in a Minecraft world. Answer questions and provide information relevant to the game. | Base developer instructions prepended to every conversation. Mandatory safety instructions are always appended internally. | You are a concise Minecraft redstone expert. |
+| historySize | number | No | 20 | Maximum number of messages kept per-player in memory. | 50 |
+| enableModeration | boolean | No | true | Enables outbound and inbound moderation checks. | false |
+| coolDownInSeconds | number | No | 15 | Minimum seconds required between a player's latest prior message and the next outbound message. | 30 |
+| minimumConfidenceScore | number | No | 0.9 | Minimum accepted reply confidence score. Replies below this threshold are replaced by fallbackMessage. | 0.8 |
+| enableMessageLogging | boolean | No | false | Logs model replies to console output. | true |
+| fallbackMessage | string | No | Sorry, I cannot provide a response to that message. | Response returned when moderation, cooldown, or confidence checks fail. | Please wait a moment before sending another message. |
 
 
 ## Colophon
