@@ -125,8 +125,8 @@ Message cooldown has not elapsed for player someplayer: 1.00s < 15s
 
 [0m  moderator - moderateInboundReply[0m
   [32m  [32m✔[39m[0m[90m should return sanitised reply when inbound reply is safe[0m
-  [32m  [32m✔[39m[0m[90m should return fallback when confidence score is below minimum[0m
 Reply confidence score 0.4 is below minimum 0.9
+  [32m  [32m✔[39m[0m[90m should return fallback when confidence score is below minimum[0m
   [32m  [32m✔[39m[0m[90m should return fallback when reply contains prompt leakage[0m
   [32m  [32m✔[39m[0m[90m should return fallback when reply contains slash command[0m
   [32m  [32m✔[39m[0m[90m should return fallback when reply is flagged by moderation[0m
@@ -138,5 +138,5 @@ Reply confidence score 0.4 is below minimum 0.9
   [32m  [32m✔[39m[0m[90m should pass message to OpenAI moderation API[0m
 
 
-[92m [0m[32m 96 passing[0m[90m (61ms)[0m
+[92m [0m[32m 96 passing[0m[90m (54ms)[0m
 
