@@ -170,22 +170,25 @@ describe("client", function () {
       assert.equal(clientWithOpts.opts.model, "gpt-5.2");
     });
 
-    it("should use default completion confidence options", function () {
-      const clientWithDefaults = new Client("sk-test-key");
-      assert.equal(clientWithDefaults.opts.temperature, 0);
-      assert.equal(clientWithDefaults.opts.logprobs, true);
-      assert.equal(clientWithDefaults.opts.topLogprobs, 3);
-    });
+    it("should keep completion confidence options internal", async function () {
+      this.mockOpenAI.chat.completions.create = function (params) {
+        assert.equal(params.temperature, 0);
+        assert.equal(params.logprobs, true);
+        assert.equal(params.top_logprobs, 3);
+        return {
+          id: "compl-789",
+          choices: [{ message: { content: "Hi there!" } }],
+        };
+      };
 
-    it("should use custom completion confidence options", function () {
       const clientWithOpts = new Client("sk-test-key", {
         temperature: 0.4,
         logprobs: false,
         topLogprobs: 5,
       });
-      assert.equal(clientWithOpts.opts.temperature, 0.4);
-      assert.equal(clientWithOpts.opts.logprobs, false);
-      assert.equal(clientWithOpts.opts.topLogprobs, 5);
+      clientWithOpts.openAI = this.mockOpenAI;
+
+      await clientWithOpts.chat(this.memory, "someplayer", "Hello");
     });
 
     it("should use custom instructions when provided in options", function () {
