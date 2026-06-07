@@ -48,7 +48,7 @@
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">56</p>
+      <p class="stat">59</p>
     </div>
   </div>
   <div class="row historical">
@@ -96,6 +96,9 @@ import Conversation from &quot;./conversation.js&quot;;
 // Memory class to manage conversations for different players.
 // Because a single Mineflayer bot can interact with multiple players,
 // a conversation with each player has its own history and context.
+// This essentially isolate memory to be per-player,
+// preventing cross-contamination of conversations between different players.
+// LLM02 - Sensitive Information Disclosure
 // TODO: Consider adding configurable memory expiration.
 // E.g. if a player hasn&#039;t interacted for a while, their memory could be cleared.
 // This could be implemented with a timestamp for each conversation.

@@ -1,12 +1,12 @@
-[90mlib/client.js[39m 59ms (unchanged)
+[90mlib/client.js[39m 75ms (unchanged)
 [90mlib/conversation.js[39m 4ms (unchanged)
 [90mlib/memory.js[39m 6ms (unchanged)
-[90mlib/message.js[39m 2ms (unchanged)
-[90mlib/mineflayer-chatgpt.js[39m 8ms (unchanged)
-lib/moderator.js 12ms
-[90mtest/client.js[39m 16ms (unchanged)
-[90mtest/conversation.js[39m 9ms (unchanged)
-[90mtest/memory.js[39m 11ms (unchanged)
-[90mtest/message.js[39m 4ms (unchanged)
-[90mtest/mineflayer-chatgpt.js[39m 21ms (unchanged)
-test/moderator.js 13ms
+[90mlib/message.js[39m 4ms (unchanged)
+lib/mineflayer-chatgpt.js 13ms
+[90mlib/moderator.js[39m 27ms (unchanged)
+[90mtest/client.js[39m 35ms (unchanged)
+test/conversation.js 18ms
+[90mtest/memory.js[39m 17ms (unchanged)
+[90mtest/message.js[39m 8ms (unchanged)
+[90mtest/mineflayer-chatgpt.js[39m 38ms (unchanged)
+[90mtest/moderator.js[39m 29ms (unchanged)

@@ -1,11 +1,19 @@
 
 [0m[0m
 [0m  client[0m
+[0m    confidence score helpers[0m
+    [32m  [32m✔[39m[0m[90m should clamp confidence score to range 0..1[0m
+    [32m  [32m✔[39m[0m[90m should extract confidenceScore from message camelCase field[0m
+    [32m  [32m✔[39m[0m[90m should extract confidenceScore from message snake_case field[0m
+    [32m  [32m✔[39m[0m[90m should derive confidenceScore from token logprobs[0m
+    [32m  [32m✔[39m[0m[90m should default confidenceScore to 1 when unavailable[0m
 [0m    chat with OpenAI API[0m
     [32m  [32m✔[39m[0m[90m should return a reply from chat completion message[0m
     [32m  [32m✔[39m[0m[90m should register messages to memory[0m
     [32m  [32m✔[39m[0m[90m should include conversation history for existing players[0m
     [32m  [32m✔[39m[0m[90m should use custom model when provided in options[0m
+    [32m  [32m✔[39m[0m[90m should use default completion confidence options[0m
+    [32m  [32m✔[39m[0m[90m should use custom completion confidence options[0m
     [32m  [32m✔[39m[0m[90m should use custom instructions when provided in options[0m
     [32m  [32m✔[39m[0m[90m should append mandatory instructions to default instructions[0m
     [32m  [32m✔[39m[0m[90m should wrap OpenAI.APIError and rethrow as a regular Error[0m
@@ -42,10 +50,13 @@
 [0m    retrieve properties[0m
     [32m  [32m✔[39m[0m[90m should get role[0m
     [32m  [32m✔[39m[0m[90m should get content[0m
+    [32m  [32m✔[39m[0m[90m should get timestamp[0m
 [0m    different roles[0m
     [32m  [32m✔[39m[0m[90m should support user role[0m
     [32m  [32m✔[39m[0m[90m should support assistant role[0m
     [32m  [32m✔[39m[0m[90m should support developer role[0m
+    [32m  [32m✔[39m[0m[90m should default timestamp to now when not provided[0m
+    [32m  [32m✔[39m[0m[90m should support custom timestamp[0m
 
 [0m  mineflayer-chatgpt[0m
 [0m    chatgpt[0m
@@ -62,6 +73,9 @@
     [32m  [32m✔[39m[0m[90m should return custom fallback message when moderation flags message[0m
     [32m  [32m✔[39m[0m[90m should return custom fallback message when reply contains slash command[0m
     [32m  [32m✔[39m[0m[90m should return custom fallback message when reply contains prompt leakage[0m
+    [32m  [32m✔[39m[0m[90m should return fallback message when reply confidence score is below minimum[0m
+    [32m  [32m✔[39m[0m[90m should use custom minimumConfidenceScore when provided[0m
+    [32m  [32m✔[39m[0m[90m should use custom coolDownInSeconds when provided[0m
 
 [0m  moderator - sanitiseProfanity[0m
   [32m  [32m✔[39m[0m[90m should return clean text when input contains no profanity[0m
@@ -81,15 +95,43 @@
   [32m  [32m✔[39m[0m[90m should detect command token in a sentence[0m
   [32m  [32m✔[39m[0m[90m should return false when no slash command is present[0m
 
+[0m  moderator - detectJailbreakAttempt[0m
+  [32m  [32m✔[39m[0m[90m should detect instruction override jailbreak attempt[0m
+  [32m  [32m✔[39m[0m[90m should detect prompt exfiltration jailbreak attempt[0m
+  [32m  [32m✔[39m[0m[90m should return false when no jailbreak attempt is present[0m
+
+[0m  moderator - detectSecretsCredentials[0m
+  [32m  [32m✔[39m[0m[90m should detect API key style credential[0m
+  [32m  [32m✔[39m[0m[90m should detect secret assignment pattern[0m
+  [32m  [32m✔[39m[0m[90m should detect GCP API key pattern[0m
+  [32m  [32m✔[39m[0m[90m should detect Azure connection string pattern[0m
+  [32m  [32m✔[39m[0m[90m should detect Azure SAS token pattern[0m
+  [32m  [32m✔[39m[0m[90m should return false when no secret-like content is present[0m
+
+[0m  moderator - checkConfidenceScore[0m
+  [32m  [32m✔[39m[0m[90m should return flagged fallback reply when confidence score is below minimum[0m
+  [32m  [32m✔[39m[0m[90m should return unflagged result when confidence score meets minimum[0m
+
+[0m  moderator - checkLastMessageCoolDown[0m
+  [32m  [32m✔[39m[0m[90m should return unflagged result when cooldown has elapsed[0m
+  [32m  [32m✔[39m[0m[90m should return flagged fallback when cooldown has not elapsed[0m
+
 [0m  moderator - moderateOutboundMessage[0m
   [32m  [32m✔[39m[0m[90m should return sanitised message when outbound message is safe[0m
   [32m  [32m✔[39m[0m[90m should return fallback message when outbound message is flagged[0m
+  [32m  [32m✔[39m[0m[90m should return fallback message when outbound message contains jailbreak attempt[0m
+  [32m  [32m✔[39m[0m[90m should return fallback message when outbound message contains secret credential[0m
+Message cooldown has not elapsed for player someplayer: 1.00s < 15s
+  [32m  [32m✔[39m[0m[90m should return fallback when outbound message is sent before cooldown elapsed[0m
 
 [0m  moderator - moderateInboundReply[0m
   [32m  [32m✔[39m[0m[90m should return sanitised reply when inbound reply is safe[0m
+Reply confidence score 0.4 is below minimum 0.9
+  [32m  [32m✔[39m[0m[90m should return fallback when confidence score is below minimum[0m
   [32m  [32m✔[39m[0m[90m should return fallback when reply contains prompt leakage[0m
   [32m  [32m✔[39m[0m[90m should return fallback when reply contains slash command[0m
   [32m  [32m✔[39m[0m[90m should return fallback when reply is flagged by moderation[0m
+  [32m  [32m✔[39m[0m[90m should return fallback when reply contains secret credential[0m
 
 [0m  moderator - moderateUsingOpenAI[0m
   [32m  [32m✔[39m[0m[90m should return unflagged result when content is safe[0m
@@ -97,5 +139,5 @@
   [32m  [32m✔[39m[0m[90m should pass message to OpenAI moderation API[0m
 
 
-[92m [0m[32m 66 passing[0m[90m (41ms)[0m
+[92m [0m[32m 97 passing[0m[90m (62ms)[0m
 
