@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- Add mandatory instructions as part of prompt design
+
 ## 1.1.3 - 2026-05-23
 ### Fixed
 - Fix publishing by directly using npm publish and adding workflow permission
