@@ -61,6 +61,7 @@
     [32m  [32m✔[39m[0m[90m should return custom fallback message when moderation flags reply[0m
     [32m  [32m✔[39m[0m[90m should return custom fallback message when moderation flags message[0m
     [32m  [32m✔[39m[0m[90m should return custom fallback message when reply contains slash command[0m
+    [32m  [32m✔[39m[0m[90m should return custom fallback message when reply contains prompt leakage[0m
 
 [0m  moderator - sanitiseProfanity[0m
   [32m  [32m✔[39m[0m[90m should return clean text when input contains no profanity[0m
@@ -70,17 +71,31 @@
   [32m  [32m✔[39m[0m[90m should return empty string when input is empty[0m
   [32m  [32m✔[39m[0m[90m should handle text with mixed case profanity[0m
 
+[0m  moderator - detectPromptLeakage[0m
+  [32m  [32m✔[39m[0m[90m should return true when message contains a mandatory instruction[0m
+  [32m  [32m✔[39m[0m[90m should return false when message does not contain mandatory instructions[0m
+
 [0m  moderator - detectSlashCommand[0m
   [32m  [32m✔[39m[0m[90m should detect a command-only message[0m
   [32m  [32m✔[39m[0m[90m should detect a command with arguments[0m
   [32m  [32m✔[39m[0m[90m should detect command token in a sentence[0m
   [32m  [32m✔[39m[0m[90m should return false when no slash command is present[0m
 
-[0m  moderator - moderateMessage[0m
+[0m  moderator - moderateOutboundMessage[0m
+  [32m  [32m✔[39m[0m[90m should return sanitised message when outbound message is safe[0m
+  [32m  [32m✔[39m[0m[90m should return fallback message when outbound message is flagged[0m
+
+[0m  moderator - moderateInboundReply[0m
+  [32m  [32m✔[39m[0m[90m should return sanitised reply when inbound reply is safe[0m
+  [32m  [32m✔[39m[0m[90m should return fallback when reply contains prompt leakage[0m
+  [32m  [32m✔[39m[0m[90m should return fallback when reply contains slash command[0m
+  [32m  [32m✔[39m[0m[90m should return fallback when reply is flagged by moderation[0m
+
+[0m  moderator - moderateUsingOpenAI[0m
   [32m  [32m✔[39m[0m[90m should return unflagged result when content is safe[0m
   [32m  [32m✔[39m[0m[90m should return flagged result when content violates policy[0m
   [32m  [32m✔[39m[0m[90m should pass message to OpenAI moderation API[0m
 
 
-[92m [0m[32m 57 passing[0m[90m (42ms)[0m
+[92m [0m[32m 66 passing[0m[90m (40ms)[0m
 
