@@ -7,6 +7,7 @@
     [32m  [32m✔[39m[0m[90m should include conversation history for existing players[0m
     [32m  [32m✔[39m[0m[90m should use custom model when provided in options[0m
     [32m  [32m✔[39m[0m[90m should use custom instructions when provided in options[0m
+    [32m  [32m✔[39m[0m[90m should append mandatory instructions to default instructions[0m
     [32m  [32m✔[39m[0m[90m should wrap OpenAI.APIError and rethrow as a regular Error[0m
 
 [0m  conversation[0m
@@ -55,9 +56,11 @@
     [32m  [32m✔[39m[0m[90m should call client chat when sendMessage is called without error[0m
     [32m  [32m✔[39m[0m[90m should log error message when it is a generic error[0m
     [32m  [32m✔[39m[0m[90m should log error message when OpenAI error is rethrown by client[0m
-    [32m  [32m✔[39m[0m[90m should log reply when enableLogging is true[0m
-    [32m  [32m✔[39m[0m[90m should not log reply when enableLogging is false[0m
+    [32m  [32m✔[39m[0m[90m should log reply when enableMessageLogging is true[0m
+    [32m  [32m✔[39m[0m[90m should not log reply when enableMessageLogging is false[0m
     [32m  [32m✔[39m[0m[90m should return custom fallback message when moderation flags reply[0m
+    [32m  [32m✔[39m[0m[90m should return custom fallback message when moderation flags message[0m
+    [32m  [32m✔[39m[0m[90m should return custom fallback message when reply contains slash command[0m
 
 [0m  moderator - sanitiseProfanity[0m
   [32m  [32m✔[39m[0m[90m should return clean text when input contains no profanity[0m
@@ -67,11 +70,17 @@
   [32m  [32m✔[39m[0m[90m should return empty string when input is empty[0m
   [32m  [32m✔[39m[0m[90m should handle text with mixed case profanity[0m
 
+[0m  moderator - detectSlashCommand[0m
+  [32m  [32m✔[39m[0m[90m should detect a command-only message[0m
+  [32m  [32m✔[39m[0m[90m should detect a command with arguments[0m
+  [32m  [32m✔[39m[0m[90m should detect command token in a sentence[0m
+  [32m  [32m✔[39m[0m[90m should return false when no slash command is present[0m
+
 [0m  moderator - moderateMessage[0m
   [32m  [32m✔[39m[0m[90m should return unflagged result when content is safe[0m
   [32m  [32m✔[39m[0m[90m should return flagged result when content violates policy[0m
   [32m  [32m✔[39m[0m[90m should pass message to OpenAI moderation API[0m
 
 
-[92m [0m[32m 50 passing[0m[90m (32ms)[0m
+[92m [0m[32m 57 passing[0m[90m (41ms)[0m
 
