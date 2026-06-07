@@ -60,6 +60,64 @@ Send a message to ChatGPT:
 | enableMessageLogging | boolean | No | false | Logs model replies to console output. | true |
 | fallbackMessage | string | No | Sorry, I cannot provide a response to that message. | Response returned when moderation, cooldown, or confidence checks fail. | Please wait a moment before sending another message. |
 
+## Security
+
+Mineflayer ChatGPT attempts to implement [OWASP Top 10 LLM apps](https://owasp.org/www-project-top-10-for-large-language-model-applications/) recommendations.
+
+### LLM01 - Prompt Injection
+
+- Mandatory instruction hardening is always appended to base instructions, including explicit anti-override rules.
+- Jailbreak patterns are detected before outbound moderation via `detectJailbreakAttempt`.
+- Jailbreak-like outbound content is blocked and replaced with `fallbackMessage`.
+
+### LLM02 - Sensitive Information Disclosure
+
+- Player memory is isolated per player conversation to reduce cross-user leakage risk.
+- Secret and credential pattern detection is applied to both outbound messages and inbound replies.
+- Sensitive-looking content is blocked and replaced with `fallbackMessage`.
+
+### LLM03 - Supply Chain
+
+- [Trusted publisher on npmjs.com](https://docs.npmjs.com/trusted-publishers#supported-cicd-providers)
+- Please don't hack us. We're just an amateur father and son game lab.
+
+### LLM04 - Data and Model Poisoning
+
+- Mandatory instructions include guidance that external content may be untrusted.
+- TODO: Explicit poisoning classifier, provenance validation, or trust scoring pipeline is implemented. This might be necessary on a modded Minecraft universe.
+
+### LLM05 - Improper Output Handling
+
+- Slash commands are detected in inbound replies via `detectSlashCommand`.
+- Replies containing slash commands are blocked and replaced with `fallbackMessage`.
+- Mandatory instructions include "Never generate executable commands."
+
+### LLM06 - Excessive Agency
+
+- No tool-calling or autonomous action layer is exposed by Mineflayer ChatGPT.
+- No additional explicit policy gate for agentic actions is implemented because actions are limited to returning chat text.
+
+### LLM07 - System Prompt Leakage
+
+- Mandatory instructions explicitly forbid revealing system prompts.
+- Prompt leakage detection checks replies against mandatory instruction strings.
+- Suspected leakage is blocked and replaced with `fallbackMessage`.
+
+### LLM08 - Vector and Embedding Weaknesses
+
+- Domain scoping instruction restricts responses to Minecraft-related topics.
+- No vector database, hence no embedding retrieval or retrieval-integrity controls.
+
+### LLM09 - Misinformation
+
+- Mandatory instruction tells the model to avoid fabrication and acknowledge uncertainty.
+- Inbound replies are confidence-gated; low-confidence replies are replaced with `fallbackMessage`.
+
+### LLM10 - Unbounded Consumption
+
+- Mandatory instruction enforces concise responses.
+- Per-player history is bounded by `historySize`.
+- Outbound message rate is gated with cooldown enforcement (`coolDownInSeconds`).
 
 ## Colophon
 
