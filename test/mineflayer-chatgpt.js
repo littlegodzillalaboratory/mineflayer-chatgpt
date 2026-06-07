@@ -49,13 +49,26 @@ describe("mineflayer-chatgpt", function () {
         .returns("Hi there!");
       const sanitiseStub = sinon
         .stub(moderator, "sanitiseProfanity")
+        .onFirstCall()
+        .returns("Hello")
+        .onSecondCall()
         .returns("Hi there!");
-      const moderateStub = sinon.stub(moderator, "moderateMessage").resolves({
-        flagged: false,
-        categories: {},
-        category_scores: {},
-        message: "Hi there!",
-      });
+      const moderateStub = sinon
+        .stub(moderator, "moderateMessage")
+        .onFirstCall()
+        .resolves({
+          flagged: false,
+          categories: {},
+          category_scores: {},
+          message: "Hello",
+        })
+        .onSecondCall()
+        .resolves({
+          flagged: false,
+          categories: {},
+          category_scores: {},
+          message: "Hi there!",
+        });
       mineflayerChatgpt.chatgpt(this.mockBot);
       this.mockBot.chatgpt.setConfig("sk-123");
       const reply = await this.mockBot.chatgpt.sendMessage(
@@ -63,8 +76,8 @@ describe("mineflayer-chatgpt", function () {
         "Hello",
       );
       assert.equal(reply, "Hi there!");
-      assert.equal(sanitiseStub.calledOnce, true);
-      assert.equal(moderateStub.calledOnce, true);
+      assert.equal(sanitiseStub.calledTwice, true);
+      assert.equal(moderateStub.calledTwice, true);
     });
     it("should log error message when it is a generic error", async function () {
       this.mockConsole
@@ -76,6 +89,13 @@ describe("mineflayer-chatgpt", function () {
         .once()
         .withArgs(sinon.match.any, "someplayer", "Hello")
         .throws(new Error("some error"));
+      sinon.stub(moderator, "sanitiseProfanity").returns("Hello");
+      sinon.stub(moderator, "moderateMessage").resolves({
+        flagged: false,
+        categories: {},
+        category_scores: {},
+        message: "Hello",
+      });
       mineflayerChatgpt.chatgpt(this.mockBot);
       this.mockBot.chatgpt.setConfig("sk-123");
       try {
@@ -100,6 +120,13 @@ describe("mineflayer-chatgpt", function () {
         .once()
         .withArgs(sinon.match.any, "someplayer", "Hello")
         .throws(wrappedError);
+      sinon.stub(moderator, "sanitiseProfanity").returns("Hello");
+      sinon.stub(moderator, "moderateMessage").resolves({
+        flagged: false,
+        categories: {},
+        category_scores: {},
+        message: "Hello",
+      });
       mineflayerChatgpt.chatgpt(this.mockBot);
       this.mockBot.chatgpt.setConfig("sk-123");
       try {
@@ -124,13 +151,28 @@ describe("mineflayer-chatgpt", function () {
         .withExactArgs(
           "Player someplayer received a reply from ChatGPT: Hi there!",
         );
-      sinon.stub(moderator, "sanitiseProfanity").returns("Hi there!");
-      sinon.stub(moderator, "moderateMessage").resolves({
-        flagged: false,
-        categories: {},
-        category_scores: {},
-        message: "Hi there!",
-      });
+      sinon
+        .stub(moderator, "sanitiseProfanity")
+        .onFirstCall()
+        .returns("Hello")
+        .onSecondCall()
+        .returns("Hi there!");
+      sinon
+        .stub(moderator, "moderateMessage")
+        .onFirstCall()
+        .resolves({
+          flagged: false,
+          categories: {},
+          category_scores: {},
+          message: "Hello",
+        })
+        .onSecondCall()
+        .resolves({
+          flagged: false,
+          categories: {},
+          category_scores: {},
+          message: "Hi there!",
+        });
       mineflayerChatgpt.chatgpt(this.mockBot);
       this.mockBot.chatgpt.setConfig("sk-123", { enableLogging: true });
       const reply = await this.mockBot.chatgpt.sendMessage(
@@ -146,13 +188,28 @@ describe("mineflayer-chatgpt", function () {
         .withArgs(sinon.match.any, "someplayer", "Hello")
         .returns("Hi there!");
       this.mockConsole.expects("log").never();
-      sinon.stub(moderator, "sanitiseProfanity").returns("Hi there!");
-      sinon.stub(moderator, "moderateMessage").resolves({
-        flagged: false,
-        categories: {},
-        category_scores: {},
-        message: "Hi there!",
-      });
+      sinon
+        .stub(moderator, "sanitiseProfanity")
+        .onFirstCall()
+        .returns("Hello")
+        .onSecondCall()
+        .returns("Hi there!");
+      sinon
+        .stub(moderator, "moderateMessage")
+        .onFirstCall()
+        .resolves({
+          flagged: false,
+          categories: {},
+          category_scores: {},
+          message: "Hello",
+        })
+        .onSecondCall()
+        .resolves({
+          flagged: false,
+          categories: {},
+          category_scores: {},
+          message: "Hi there!",
+        });
       mineflayerChatgpt.chatgpt(this.mockBot);
       this.mockBot.chatgpt.setConfig("sk-123", { enableLogging: false });
       const reply = await this.mockBot.chatgpt.sendMessage(
@@ -169,8 +226,11 @@ describe("mineflayer-chatgpt", function () {
         .returns("Some flagged content");
       const sanitiseStub = sinon
         .stub(moderator, "sanitiseProfanity")
+        .onFirstCall()
+        .returns("Hello")
+        .onSecondCall()
         .returns("Some flagged content");
-      const moderation = {
+      const flaggedReplyModeration = {
         flagged: true,
         categories: { harassment: true },
         category_scores: { harassment: 0.9 },
@@ -178,12 +238,52 @@ describe("mineflayer-chatgpt", function () {
       };
       const moderateStub = sinon
         .stub(moderator, "moderateMessage")
-        .resolves(moderation);
+        .onFirstCall()
+        .resolves({
+          flagged: false,
+          categories: {},
+          category_scores: {},
+          message: "Hello",
+        })
+        .onSecondCall()
+        .resolves(flaggedReplyModeration);
       this.mockConsole
         .expects("warn")
         .once()
         .withExactArgs(
-          `Message flagged by moderation: ${JSON.stringify(moderation)}`,
+          `Reply flagged by moderation: ${JSON.stringify(flaggedReplyModeration)}`,
+        );
+      mineflayerChatgpt.chatgpt(this.mockBot);
+      this.mockBot.chatgpt.setConfig("sk-123", {
+        fallbackMessage: "Custom fallback message",
+      });
+      const reply = await this.mockBot.chatgpt.sendMessage(
+        "someplayer",
+        "Hello",
+      );
+      assert.equal(reply, "Custom fallback message");
+      assert.equal(sanitiseStub.calledTwice, true);
+      assert.equal(moderateStub.calledTwice, true);
+    });
+    it("should return custom fallback message when moderation flags message", async function () {
+      this.mockClient.expects("chat").never();
+      const sanitiseStub = sinon
+        .stub(moderator, "sanitiseProfanity")
+        .returns("Some flagged input");
+      const flaggedMessageModeration = {
+        flagged: true,
+        categories: { harassment: true },
+        category_scores: { harassment: 0.9 },
+        message: "Some flagged input",
+      };
+      const moderateStub = sinon
+        .stub(moderator, "moderateMessage")
+        .resolves(flaggedMessageModeration);
+      this.mockConsole
+        .expects("warn")
+        .once()
+        .withExactArgs(
+          `Message flagged by moderation: ${JSON.stringify(flaggedMessageModeration)}`,
         );
       mineflayerChatgpt.chatgpt(this.mockBot);
       this.mockBot.chatgpt.setConfig("sk-123", {

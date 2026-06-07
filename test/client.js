@@ -119,7 +119,9 @@ describe("client", function () {
       const clientWithOpts = new Client("sk-test-key", {
         instructions: customInstructions,
       });
-      assert.ok(clientWithOpts.opts.instructions.startsWith(customInstructions));
+      assert.ok(
+        clientWithOpts.opts.instructions.startsWith(customInstructions),
+      );
       for (const marker of MANDATORY_INSTRUCTION_MARKERS) {
         assert.ok(clientWithOpts.opts.instructions.includes(marker));
       }

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Add mandatory instructions as part of prompt design
+- Add profanity and moderation to outbound message
 
 ## 1.1.3 - 2026-05-23
 ### Fixed
