@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add jailbreak detection
 - Add secrets and credentials detection
 - Add instruction for Minecraft-relevancy
+- Add reply confidence score threshold check
 
 ### Changed
 - Rename enableLogging to enableMessageLogging

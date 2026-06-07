@@ -46,7 +46,10 @@ describe("mineflayer-chatgpt", function () {
         .expects("chat")
         .once()
         .withArgs(sinon.match.any, "someplayer", "Hello")
-        .returns("Hi there!");
+        .returns({
+          reply: "Hi there!",
+          confidenceScore: 0.99,
+        });
       const moderateOutboundStub = sinon
         .stub(moderator, "moderateOutboundMessage")
         .resolves({
@@ -128,7 +131,10 @@ describe("mineflayer-chatgpt", function () {
         .expects("chat")
         .once()
         .withArgs(sinon.match.any, "someplayer", "Hello")
-        .returns("Hi there!");
+        .returns({
+          reply: "Hi there!",
+          confidenceScore: 0.99,
+        });
       this.mockConsole
         .expects("log")
         .once()
@@ -158,7 +164,10 @@ describe("mineflayer-chatgpt", function () {
         .expects("chat")
         .once()
         .withArgs(sinon.match.any, "someplayer", "Hello")
-        .returns("Hi there!");
+        .returns({
+          reply: "Hi there!",
+          confidenceScore: 0.99,
+        });
       this.mockConsole.expects("log").never();
       sinon.stub(moderator, "moderateOutboundMessage").resolves({
         message: "Hello",
@@ -183,7 +192,10 @@ describe("mineflayer-chatgpt", function () {
         .expects("chat")
         .once()
         .withArgs(sinon.match.any, "someplayer", "Hello")
-        .returns("Some flagged content");
+        .returns({
+          reply: "Some flagged content",
+          confidenceScore: 0.99,
+        });
       const moderateOutboundStub = sinon
         .stub(moderator, "moderateOutboundMessage")
         .resolves({
@@ -236,7 +248,10 @@ describe("mineflayer-chatgpt", function () {
         .expects("chat")
         .once()
         .withArgs(sinon.match.any, "someplayer", "Hello")
-        .returns("Use /kill @e");
+        .returns({
+          reply: "Use /kill @e",
+          confidenceScore: 0.99,
+        });
       const moderateOutboundStub = sinon
         .stub(moderator, "moderateOutboundMessage")
         .resolves({
@@ -268,7 +283,10 @@ describe("mineflayer-chatgpt", function () {
         .expects("chat")
         .once()
         .withArgs(sinon.match.any, "someplayer", "Hello")
-        .returns("Keep responses concise.");
+        .returns({
+          reply: "Keep responses concise.",
+          confidenceScore: 0.99,
+        });
       const moderateOutboundStub = sinon
         .stub(moderator, "moderateOutboundMessage")
         .resolves({
@@ -293,6 +311,94 @@ describe("mineflayer-chatgpt", function () {
       assert.equal(reply, "Custom fallback message");
       assert.equal(moderateOutboundStub.calledOnce, true);
       assert.equal(moderateInboundStub.calledOnce, true);
+    });
+
+    it("should return fallback message when reply confidence score is below minimum", async function () {
+      this.mockClient
+        .expects("chat")
+        .once()
+        .withArgs(sinon.match.any, "someplayer", "Hello")
+        .returns({
+          reply: "Hi there!",
+          confidenceScore: 0.4,
+        });
+      const moderateOutboundStub = sinon
+        .stub(moderator, "moderateOutboundMessage")
+        .resolves({
+          message: "Hello",
+          flagged: false,
+        });
+      const moderateInboundStub = sinon
+        .stub(moderator, "moderateInboundReply")
+        .resolves({
+          reply: "Sorry, I cannot provide a response to that message.",
+          flagged: true,
+        });
+      this.mockConsole.expects("warn").never();
+      mineflayerChatgpt.chatgpt(this.mockBot);
+      this.mockBot.chatgpt.setConfig("sk-123");
+      const reply = await this.mockBot.chatgpt.sendMessage(
+        "someplayer",
+        "Hello",
+      );
+      assert.equal(reply, "Sorry, I cannot provide a response to that message.");
+      assert.equal(moderateOutboundStub.calledOnce, true);
+      assert.equal(moderateInboundStub.calledOnce, true);
+      assert.equal(
+        moderateInboundStub.calledWith(
+          sinon.match.any,
+          "Hi there!",
+          "Sorry, I cannot provide a response to that message.",
+          0.4,
+          0.9,
+        ),
+        true,
+      );
+    });
+
+    it("should use custom minimumConfidenceScore when provided", async function () {
+      this.mockClient
+        .expects("chat")
+        .once()
+        .withArgs(sinon.match.any, "someplayer", "Hello")
+        .returns({
+          reply: "Hi there!",
+          confidenceScore: 0.85,
+        });
+      const moderateOutboundStub = sinon
+        .stub(moderator, "moderateOutboundMessage")
+        .resolves({
+          message: "Hello",
+          flagged: false,
+        });
+      const moderateInboundStub = sinon
+        .stub(moderator, "moderateInboundReply")
+        .resolves({
+          reply: "Hi there!",
+          flagged: false,
+        });
+      this.mockConsole.expects("warn").never();
+      mineflayerChatgpt.chatgpt(this.mockBot);
+      this.mockBot.chatgpt.setConfig("sk-123", {
+        minimumConfidenceScore: 0.8,
+      });
+      const reply = await this.mockBot.chatgpt.sendMessage(
+        "someplayer",
+        "Hello",
+      );
+      assert.equal(reply, "Hi there!");
+      assert.equal(moderateOutboundStub.calledOnce, true);
+      assert.equal(moderateInboundStub.calledOnce, true);
+      assert.equal(
+        moderateInboundStub.calledWith(
+          sinon.match.any,
+          "Hi there!",
+          sinon.match.string,
+          0.85,
+          0.8,
+        ),
+        true,
+      );
     });
   });
 });

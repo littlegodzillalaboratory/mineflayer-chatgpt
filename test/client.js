@@ -12,6 +12,60 @@ const MANDATORY_INSTRUCTION_MARKERS = [
 ];
 
 describe("client", function () {
+  describe("confidence score helpers", function () {
+    beforeEach(function () {
+      this.client = new Client("sk-test-key");
+    });
+
+    it("should clamp confidence score to range 0..1", function () {
+      assert.equal(this.client._clampConfidenceScore(-0.2), 0);
+      assert.equal(this.client._clampConfidenceScore(0.7), 0.7);
+      assert.equal(this.client._clampConfidenceScore(1.4), 1);
+    });
+
+    it("should extract confidenceScore from message camelCase field", function () {
+      const score = this.client._extractConfidenceScore({
+        message: {
+          confidenceScore: 0.42,
+        },
+      });
+      assert.equal(score, 0.42);
+    });
+
+    it("should extract confidenceScore from message snake_case field", function () {
+      const score = this.client._extractConfidenceScore({
+        message: {
+          confidence_score: 0.33,
+        },
+      });
+      assert.equal(score, 0.33);
+    });
+
+    it("should derive confidenceScore from token logprobs", function () {
+      const score = this.client._extractConfidenceScore({
+        message: {
+          content: "Hi there!",
+        },
+        logprobs: {
+          content: [
+            { logprob: -0.1 },
+            { logprob: -0.2 },
+          ],
+        },
+      });
+      assert.ok(score > 0 && score < 1);
+    });
+
+    it("should default confidenceScore to 1 when unavailable", function () {
+      const score = this.client._extractConfidenceScore({
+        message: {
+          content: "Hi there!",
+        },
+      });
+      assert.equal(score, 1);
+    });
+  });
+
   describe("chat with OpenAI API", function () {
     beforeEach(function () {
       this.memory = new Memory();
@@ -22,6 +76,9 @@ describe("client", function () {
               assert.equal(params.messages[1].role, "user");
               assert.equal(params.messages[1].content, "Hello");
               assert.equal(params.model, "gpt-5.2");
+              assert.equal(params.temperature, 0);
+              assert.equal(params.logprobs, true);
+              assert.equal(params.top_logprobs, 3);
               return {
                 id: "compl-123",
                 choices: [{ message: { content: "Hi there!" } }],
@@ -35,8 +92,9 @@ describe("client", function () {
     });
 
     it("should return a reply from chat completion message", async function () {
-      const reply = await this.client.chat(this.memory, "someplayer", "Hello");
-      assert.equal(reply, "Hi there!");
+      const result = await this.client.chat(this.memory, "someplayer", "Hello");
+      assert.equal(result.reply, "Hi there!");
+      assert.equal(result.confidenceScore, 1);
     });
 
     it("should register messages to memory", async function () {
@@ -104,7 +162,8 @@ describe("client", function () {
         "someplayer",
         "Second hello",
       );
-      assert.equal(reply, "Hi there again!");
+      assert.equal(reply.reply, "Hi there again!");
+      assert.equal(reply.confidenceScore, 1);
     });
 
     it("should use custom model when provided in options", function () {
@@ -112,6 +171,24 @@ describe("client", function () {
         model: "gpt-5.2",
       });
       assert.equal(clientWithOpts.opts.model, "gpt-5.2");
+    });
+
+    it("should use default completion confidence options", function () {
+      const clientWithDefaults = new Client("sk-test-key");
+      assert.equal(clientWithDefaults.opts.temperature, 0);
+      assert.equal(clientWithDefaults.opts.logprobs, true);
+      assert.equal(clientWithDefaults.opts.topLogprobs, 3);
+    });
+
+    it("should use custom completion confidence options", function () {
+      const clientWithOpts = new Client("sk-test-key", {
+        temperature: 0.4,
+        logprobs: false,
+        topLogprobs: 5,
+      });
+      assert.equal(clientWithOpts.opts.temperature, 0.4);
+      assert.equal(clientWithOpts.opts.logprobs, false);
+      assert.equal(clientWithOpts.opts.topLogprobs, 5);
     });
 
     it("should use custom instructions when provided in options", function () {

@@ -143,6 +143,31 @@ describe("moderator - detectSecretsCredentials", function () {
   });
 });
 
+describe("moderator - checkConfidenceScore", function () {
+  afterEach(function () {
+    sinon.restore();
+  });
+
+  it("should return flagged fallback reply when confidence score is below minimum", function () {
+    const consoleWarnStub = sinon.stub(console, "warn");
+    const result = moderator.checkConfidenceScore(0.4, 0.9, "fallback");
+    assert.equals(result.reply, "fallback");
+    assert.isTrue(result.flagged);
+    assert.isTrue(
+      consoleWarnStub.calledWith(
+        "Reply confidence score 0.4 is below minimum 0.9",
+      ),
+    );
+  });
+
+  it("should return unflagged result when confidence score meets minimum", function () {
+    const consoleWarnStub = sinon.stub(console, "warn");
+    const result = moderator.checkConfidenceScore(0.95, 0.9, "fallback");
+    assert.isFalse(result.flagged);
+    assert.isTrue(consoleWarnStub.notCalled);
+  });
+});
+
 describe("moderator - moderateOutboundMessage", function () {
   afterEach(function () {
     sinon.restore();
@@ -287,9 +312,39 @@ describe("moderator - moderateInboundReply", function () {
       mockOpenAIClient,
       "You got clapped",
       "fallback",
+      0.99,
+      0.9,
     );
     assert.equals(result.reply, "You got *******");
     assert.isFalse(result.flagged);
+  });
+
+  it("should return fallback when confidence score is below minimum", async function () {
+    const createStub = sinon.stub().resolves({
+      results: [
+        {
+          flagged: false,
+          categories: {},
+          category_scores: {},
+        },
+      ],
+    });
+    const mockOpenAIClient = {
+      moderations: {
+        create: createStub,
+      },
+    };
+
+    const result = await moderator.moderateInboundReply(
+      mockOpenAIClient,
+      "You got clapped",
+      "fallback",
+      0.4,
+      0.9,
+    );
+    assert.equals(result.reply, "fallback");
+    assert.isTrue(result.flagged);
+    assert.isTrue(createStub.notCalled);
   });
 
   it("should return fallback when reply contains prompt leakage", async function () {

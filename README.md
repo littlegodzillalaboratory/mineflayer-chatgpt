@@ -36,8 +36,12 @@ Set the configuration:
     const chatGptApiKey = 'sk-1234567890abcdef';
     bot.chatgpt.setConfig(chatGptApiKey, {
       model: 'gpt-5.2',
+            temperature: 0,
+            logprobs: true,
+            topLogprobs: 3,
       historySize: 20,
       enableModeration: true,
+            minimumConfidenceScore: 0.9,
       enableMessageLogging: true
     });
 
