@@ -229,6 +229,19 @@ describe("moderator - checkLastMessageCoolDown", function () {
       ),
     );
   });
+
+  it("should return unflagged result when player has no previous message", function () {
+    const memory = createMemoryWithLastMessageTimestamp(undefined);
+    const consoleWarnStub = sinon.stub(console, "warn");
+    const result = moderator.checkLastMessageCoolDown(
+      memory,
+      "newplayer",
+      15,
+      "fallback",
+    );
+    assert.isFalse(result.flagged);
+    assert.isTrue(consoleWarnStub.notCalled);
+  });
 });
 
 describe("moderator - moderateOutboundMessage", function () {
