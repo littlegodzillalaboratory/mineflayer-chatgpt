@@ -38,7 +38,7 @@ Set the configuration:
       model: 'gpt-5.2',
       historySize: 20,
       enableModeration: true,
-      enableLogging: true
+      enableMessageLogging: true
     });
 
 Send a message to ChatGPT:

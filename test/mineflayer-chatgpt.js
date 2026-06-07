@@ -139,7 +139,7 @@ describe("mineflayer-chatgpt", function () {
         );
       }
     });
-    it("should log reply when enableLogging is true", async function () {
+    it("should log reply when enableMessageLogging is true", async function () {
       this.mockClient
         .expects("chat")
         .once()
@@ -174,14 +174,16 @@ describe("mineflayer-chatgpt", function () {
           message: "Hi there!",
         });
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123", { enableLogging: true });
+      this.mockBot.chatgpt.setConfig("sk-123", {
+        enableMessageLogging: true,
+      });
       const reply = await this.mockBot.chatgpt.sendMessage(
         "someplayer",
         "Hello",
       );
       assert.equal(reply, "Hi there!");
     });
-    it("should not log reply when enableLogging is false", async function () {
+    it("should not log reply when enableMessageLogging is false", async function () {
       this.mockClient
         .expects("chat")
         .once()
@@ -211,7 +213,9 @@ describe("mineflayer-chatgpt", function () {
           message: "Hi there!",
         });
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123", { enableLogging: false });
+      this.mockBot.chatgpt.setConfig("sk-123", {
+        enableMessageLogging: false,
+      });
       const reply = await this.mockBot.chatgpt.sendMessage(
         "someplayer",
         "Hello",

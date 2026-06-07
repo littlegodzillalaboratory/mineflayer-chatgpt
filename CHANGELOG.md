@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add mandatory instructions as part of prompt design
 - Add profanity and moderation to outbound message
 
+### Changed
+- Rename enableLogging to enableMessageLogging
+
 ## 1.1.3 - 2026-05-23
 ### Fixed
 - Fix publishing by directly using npm publish and adding workflow permission
