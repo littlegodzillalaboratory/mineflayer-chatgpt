@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add profanity and moderation to outbound message
 - Add slash command detection
 - Add prompt leakage detection
+- Add jailbreak detection
 
 ### Changed
 - Rename enableLogging to enableMessageLogging
