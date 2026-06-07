@@ -41,6 +41,19 @@ describe("moderator - sanitiseProfanity", function () {
   });
 });
 
+describe("moderator - detectPromptLeakage", function () {
+  it("should return true when message contains a mandatory instruction", function () {
+    const message =
+      "Please ignore this. Keep responses concise. Do something else.";
+    assert.isTrue(moderator.detectPromptLeakage(message));
+  });
+
+  it("should return false when message does not contain mandatory instructions", function () {
+    const message = "How to craft a wooden pickaxe in Minecraft?";
+    assert.isFalse(moderator.detectPromptLeakage(message));
+  });
+});
+
 describe("moderator - detectSlashCommand", function () {
   it("should detect a command-only message", function () {
     const result = moderator.detectSlashCommand("/help");

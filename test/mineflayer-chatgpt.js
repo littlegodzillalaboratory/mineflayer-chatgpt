@@ -56,6 +56,9 @@ describe("mineflayer-chatgpt", function () {
       const detectSlashCommandStub = sinon
         .stub(moderator, "detectSlashCommand")
         .returns(false);
+      const detectPromptLeakageStub = sinon
+        .stub(moderator, "detectPromptLeakage")
+        .returns(false);
       const moderateStub = sinon
         .stub(moderator, "moderateMessage")
         .onFirstCall()
@@ -80,6 +83,7 @@ describe("mineflayer-chatgpt", function () {
       );
       assert.equal(reply, "Hi there!");
       assert.equal(sanitiseStub.calledTwice, true);
+      assert.equal(detectPromptLeakageStub.calledOnce, true);
       assert.equal(detectSlashCommandStub.calledOnce, true);
       assert.equal(moderateStub.calledTwice, true);
     });
@@ -94,6 +98,7 @@ describe("mineflayer-chatgpt", function () {
         .withArgs(sinon.match.any, "someplayer", "Hello")
         .throws(new Error("some error"));
       sinon.stub(moderator, "sanitiseProfanity").returns("Hello");
+      sinon.stub(moderator, "detectPromptLeakage").returns(false);
       sinon.stub(moderator, "detectSlashCommand").returns(false);
       sinon.stub(moderator, "moderateMessage").resolves({
         flagged: false,
@@ -126,6 +131,7 @@ describe("mineflayer-chatgpt", function () {
         .withArgs(sinon.match.any, "someplayer", "Hello")
         .throws(wrappedError);
       sinon.stub(moderator, "sanitiseProfanity").returns("Hello");
+      sinon.stub(moderator, "detectPromptLeakage").returns(false);
       sinon.stub(moderator, "detectSlashCommand").returns(false);
       sinon.stub(moderator, "moderateMessage").resolves({
         flagged: false,
@@ -163,6 +169,9 @@ describe("mineflayer-chatgpt", function () {
         .returns("Hello")
         .onSecondCall()
         .returns("Hi there!");
+      sinon
+        .stub(moderator, "detectPromptLeakage")
+        .returns(false);
       sinon
         .stub(moderator, "detectSlashCommand")
         .returns(false);
@@ -205,6 +214,9 @@ describe("mineflayer-chatgpt", function () {
         .returns("Hello")
         .onSecondCall()
         .returns("Hi there!");
+      sinon
+        .stub(moderator, "detectPromptLeakage")
+        .returns(false);
       sinon
         .stub(moderator, "detectSlashCommand")
         .returns(false);
@@ -249,6 +261,9 @@ describe("mineflayer-chatgpt", function () {
       const detectSlashCommandStub = sinon
         .stub(moderator, "detectSlashCommand")
         .returns(false);
+      const detectPromptLeakageStub = sinon
+        .stub(moderator, "detectPromptLeakage")
+        .returns(false);
       const flaggedReplyModeration = {
         flagged: true,
         categories: { harassment: true },
@@ -282,6 +297,7 @@ describe("mineflayer-chatgpt", function () {
       );
       assert.equal(reply, "Custom fallback message");
       assert.equal(sanitiseStub.calledTwice, true);
+      assert.equal(detectPromptLeakageStub.calledOnce, true);
       assert.equal(detectSlashCommandStub.calledOnce, true);
       assert.equal(moderateStub.calledTwice, true);
     });
@@ -293,6 +309,10 @@ describe("mineflayer-chatgpt", function () {
       const detectSlashCommandStub = sinon.stub(
         moderator,
         "detectSlashCommand",
+      );
+      const detectPromptLeakageStub = sinon.stub(
+        moderator,
+        "detectPromptLeakage",
       );
       const flaggedMessageModeration = {
         flagged: true,
@@ -319,6 +339,7 @@ describe("mineflayer-chatgpt", function () {
       );
       assert.equal(reply, "Custom fallback message");
       assert.equal(sanitiseStub.calledOnce, true);
+      assert.equal(detectPromptLeakageStub.notCalled, true);
       assert.equal(detectSlashCommandStub.notCalled, true);
       assert.equal(moderateStub.calledOnce, true);
     });
@@ -338,6 +359,9 @@ describe("mineflayer-chatgpt", function () {
       const detectSlashCommandStub = sinon
         .stub(moderator, "detectSlashCommand")
         .returns(true);
+      const detectPromptLeakageStub = sinon
+        .stub(moderator, "detectPromptLeakage")
+        .returns(false);
       const moderateStub = sinon
         .stub(moderator, "moderateMessage")
         .onFirstCall()
@@ -361,7 +385,52 @@ describe("mineflayer-chatgpt", function () {
       );
       assert.equal(reply, "Custom fallback message");
       assert.equal(sanitiseStub.calledTwice, true);
+      assert.equal(detectPromptLeakageStub.calledOnce, true);
       assert.equal(detectSlashCommandStub.calledOnce, true);
+      assert.equal(moderateStub.calledOnce, true);
+    });
+
+    it("should return custom fallback message when reply contains prompt leakage", async function () {
+      this.mockClient
+        .expects("chat")
+        .once()
+        .withArgs(sinon.match.any, "someplayer", "Hello")
+        .returns("Keep responses concise.");
+      const sanitiseStub = sinon
+        .stub(moderator, "sanitiseProfanity")
+        .onFirstCall()
+        .returns("Hello")
+        .onSecondCall()
+        .returns("Keep responses concise.");
+      const detectPromptLeakageStub = sinon
+        .stub(moderator, "detectPromptLeakage")
+        .returns(true);
+      const detectSlashCommandStub = sinon.stub(moderator, "detectSlashCommand");
+      const moderateStub = sinon
+        .stub(moderator, "moderateMessage")
+        .onFirstCall()
+        .resolves({
+          flagged: false,
+          categories: {},
+          category_scores: {},
+          message: "Hello",
+        });
+      this.mockConsole
+        .expects("warn")
+        .once()
+        .withExactArgs("Reply contains prompt leakage: Keep responses concise.");
+      mineflayerChatgpt.chatgpt(this.mockBot);
+      this.mockBot.chatgpt.setConfig("sk-123", {
+        fallbackMessage: "Custom fallback message",
+      });
+      const reply = await this.mockBot.chatgpt.sendMessage(
+        "someplayer",
+        "Hello",
+      );
+      assert.equal(reply, "Custom fallback message");
+      assert.equal(sanitiseStub.calledTwice, true);
+      assert.equal(detectPromptLeakageStub.calledOnce, true);
+      assert.equal(detectSlashCommandStub.notCalled, true);
       assert.equal(moderateStub.calledOnce, true);
     });
   });

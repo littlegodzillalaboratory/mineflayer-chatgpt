@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add mandatory instructions as part of prompt design
 - Add profanity and moderation to outbound message
 - Add slash command detection
+- Add prompt leakage detection
 
 ### Changed
 - Rename enableLogging to enableMessageLogging
