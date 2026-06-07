@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add slash command detection
 - Add prompt leakage detection
 - Add jailbreak detection
+- Add secrets and credentials detection
 
 ### Changed
 - Rename enableLogging to enableMessageLogging
