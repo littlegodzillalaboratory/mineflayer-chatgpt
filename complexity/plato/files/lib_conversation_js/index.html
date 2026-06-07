@@ -48,7 +48,7 @@
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">32</p>
+      <p class="stat">41</p>
     </div>
   </div>
   <div class="row historical">
@@ -91,27 +91,36 @@
   <div class="row">
     <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
 
-// Conversation class to manage a series of messages forming the communication history
-// sent to OpenAI API.
+/**
+ * Conversation history for a single player.
+ *
+ * @class
+ */
 class Conversation {
-  // Initializes a new Conversation instance.
-  // This instance will hold a list of messages exchanged in the conversation.
-  // The limit parameter limits the number of messages stored, removing the oldest
-  // when the limit is exceeded.
+  /**
+   * Initializes a new Conversation instance.
+   *
+   * @param {number} [limit=20] - Maximum number of messages to keep.
+   */
   constructor(limit) {
     this.messages = [];
     this.limit = limit || 20;
   }
 
-  // Retrieve the list of messages in the conversation.
+  /**
+   * Retrieve the list of messages in the conversation.
+   *
+   * @returns {Message[]} Conversation messages.
+   */
   getMessages() {
     return this.messages;
   }
 
-  // Add a new message to the conversation.
-  // New messages will be appended to the end of the list.
-  // This method is used to register both user messages and assistant replies.
-  // If a limit limit is set and exceeded, the oldest message is removed.
+  /**
+   * Add a new message to the conversation.
+   *
+   * @param {Message} message - Message to append.
+   */
   addMessage(message) {
     this.messages.push(message);
     if (this.messages.length &gt; this.limit) {

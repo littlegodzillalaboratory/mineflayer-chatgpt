@@ -114,6 +114,7 @@
 [0m  moderator - checkLastMessageCoolDown[0m
   [32m  [32m✔[39m[0m[90m should return unflagged result when cooldown has elapsed[0m
   [32m  [32m✔[39m[0m[90m should return flagged fallback when cooldown has not elapsed[0m
+  [32m  [32m✔[39m[0m[90m should return unflagged result when player has no previous message[0m
 
 [0m  moderator - moderateOutboundMessage[0m
   [32m  [32m✔[39m[0m[90m should return sanitised message when outbound message is safe[0m
@@ -138,5 +139,5 @@ Reply confidence score 0.4 is below minimum 0.9
   [32m  [32m✔[39m[0m[90m should pass message to OpenAI moderation API[0m
 
 
-[92m [0m[32m 96 passing[0m[90m (54ms)[0m
+[92m [0m[32m 97 passing[0m[90m (57ms)[0m
 

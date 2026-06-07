@@ -48,7 +48,7 @@
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">31</p>
+      <p class="stat">51</p>
     </div>
   </div>
   <div class="row historical">
@@ -91,29 +91,49 @@
   <div class="row">
     <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
 
-// Message class to encapsulate a message payload to be sent to OpenAI API.
-// A message consists of a role and content.
+/**
+ * Message payload sent to OpenAI API.
+ * A message consists of a role, content, and timestamp.
+ *
+ * @class
+ */
 class Message {
-  // Initializes a new Message instance with a role and content.
-  // The role can be &#039;user&#039;, &#039;assistant&#039;, or &#039;developer&#039;.
-  // The content is the actual message string.
+  /**
+   * Initializes a new Message instance.
+   *
+   * @param {string} role - Message role such as `user`, `assistant`, or `developer`.
+   * @param {string} content - Message content.
+   * @param {number} [timestamp=Date.now()] - Unix timestamp in milliseconds.
+   */
   constructor(role, content, timestamp = Date.now()) {
     this.role = role;
     this.content = content;
     this.timestamp = timestamp;
   }
 
-  // Retrieve the role of the message.
+  /**
+   * Retrieve the role of the message.
+   *
+   * @returns {string} Message role.
+   */
   getRole() {
     return this.role;
   }
 
-  // Retrieve the content of the message.
+  /**
+   * Retrieve the content of the message.
+   *
+   * @returns {string} Message content.
+   */
   getContent() {
     return this.content;
   }
 
-  // Retrieve the timestamp of the message.
+  /**
+   * Retrieve the timestamp of the message.
+   *
+   * @returns {number} Unix timestamp in milliseconds.
+   */
   getTimestamp() {
     return this.timestamp;
   }
