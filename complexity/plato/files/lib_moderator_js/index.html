@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">67.75</p>
+      <p class="stat">67.90</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">338</p>
+      <p class="stat">317</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">30.46</p>
+      <p class="stat">30.07</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">1.18</p>
+      <p class="stat">1.06</p>
     </div>
   </div>
 </div>
@@ -125,6 +125,12 @@ const SECRET_CREDENTIAL_PATTERNS = [
   /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/, // JWT
 ];
 
+/**
+ * Sanitise profanity in a string.
+ *
+ * @param {string} message - Message text.
+ * @returns {string} Sanitised message.
+ */
 function sanitiseProfanity(message) {
   return leoProfanity.clean(message);
 }
@@ -250,29 +256,9 @@ function checkConfidenceScore(
 }
 
 /**
- * Use OpenAI&#039;s moderation API to check if the message violates content policy.
- *
- * @param {object} openAIClient - OpenAI client instance.
- * @param {string} message - Message text to moderate.
- * @returns {Promise&lt;object&gt;} Moderation result object.
- */
-async function moderateUsingOpenAI(openAIClient, message) {
-  const moderation = await openAIClient.moderations.create({
-    input: message,
-  });
-  const result = moderation.results[0];
-  return {
-    flagged: result.flagged,
-    categories: result.categories,
-    category_scores: result.category_scores,
-    message: message,
-  };
-}
-
-/**
  * Sanitise and moderate an outbound message before it is sent to the model.
  *
- * @param {object} openAIClient - OpenAI client instance.
+ * @param {object} openAIClient - Client instance that can call OpenAI moderation.
  * @param {object} memory - Per-player memory store.
  * @param {string} player - Player name or id.
  * @param {string} message - Outbound message.
@@ -318,7 +304,7 @@ async function moderateOutboundMessage(
     };
   }
 
-  const moderation = await moderateUsingOpenAI(openAIClient, sanitisedMessage);
+  const moderation = await openAIClient.moderate(sanitisedMessage);
   if (moderation.flagged) {
     console.warn(
       `Message flagged by OpenAI moderation API: ${JSON.stringify(moderation)}`,
@@ -338,7 +324,7 @@ async function moderateOutboundMessage(
 /**
  * Sanitise and moderate an inbound reply before it is sent to the player.
  *
- * @param {object} openAIClient - OpenAI client instance.
+ * @param {object} openAIClient - Client instance that can call OpenAI moderation.
  * @param {string} reply - Model reply.
  * @param {string} fallbackMessage - Fallback message.
  * @param {number} [confidenceScore=1] - Reply confidence score.
@@ -356,12 +342,6 @@ async function moderateInboundReply(
 
   const confidenceCheck = checkConfidenceScore(
     confidenceScore,
-    /**
-     * Sanitise profanity in a string.
-     *
-     * @param {string} message - Message text.
-     * @returns {string} Sanitised message.
-     */
     minimumConfidenceScore,
     fallbackMessage,
   );
@@ -395,7 +375,7 @@ async function moderateInboundReply(
     };
   }
 
-  const moderation = await moderateUsingOpenAI(openAIClient, sanitisedReply);
+  const moderation = await openAIClient.moderate(sanitisedReply);
   if (moderation.flagged) {
     console.warn(
       `Reply flagged by OpenAI moderation API: ${JSON.stringify(moderation)}`,
@@ -423,7 +403,6 @@ const exports = {
   checkConfidenceScore: checkConfidenceScore,
   moderateOutboundMessage: moderateOutboundMessage,
   moderateInboundReply: moderateInboundReply,
-  moderateUsingOpenAI: moderateUsingOpenAI,
 };
 
 export { exports as default, MANDATORY_INSTRUCTIONS_LIST, detectPromptLeakage };</textarea>
