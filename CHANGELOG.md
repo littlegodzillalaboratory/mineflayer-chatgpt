@@ -6,9 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-### Fixed
-- Fix missing create object temporarily via openai@6.33.0 downgrade
-
 ## 1.2.0 - 2026-06-07
 ### Added
 - Add mandatory instructions as part of prompt design
