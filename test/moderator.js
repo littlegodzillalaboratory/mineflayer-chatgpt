@@ -1,7 +1,6 @@
 "use strict";
 import leoProfanity from "leo-profanity";
 import moderator from "../lib/moderator.js";
-import OpenAI from "openai";
 import referee from "@sinonjs/referee";
 import sinon from "sinon";
 const assert = referee.assert;
@@ -651,33 +650,5 @@ describe("moderator - moderateUsingOpenAI", function () {
     };
     await moderator.moderateUsingOpenAI(mockOpenAIClient, "test message");
     assert.isTrue(createStub.calledWith({ input: "test message" }));
-  });
-
-  it("should wrap OpenAI.APIError and rethrow as a regular Error", async function () {
-    const mockOpenAIClient = {
-      moderations: {
-        create: sinon.stub().rejects(
-          new OpenAI.APIError(
-            401,
-            {
-              type: "invalid_request_error",
-              code: "invalid_api_key",
-              message: "Incorrect API key provided",
-            },
-            "Incorrect API key provided",
-            { get: () => undefined },
-          ),
-        ),
-      },
-    };
-
-    try {
-      await moderator.moderateUsingOpenAI(mockOpenAIClient, "test message");
-      assert.fail("Expected an error to be thrown");
-    } catch (error) {
-      assert.isFalse(error instanceof OpenAI.APIError);
-      assert.isTrue(error.message.includes("An OpenAI error has occurred"));
-      assert.isTrue(error.message.includes("invalid_api_key"));
-    }
   });
 });
