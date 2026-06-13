@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- Upgrade Suntory to 1.0.0
+
 ## 1.2.1 - 2026-06-08
 ### Fixed
 - Fix OpenAI API client passing to moderator
