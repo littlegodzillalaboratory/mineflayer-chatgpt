@@ -152,4 +152,4 @@ Build reports:
 
 Related projects:
 
-* [minecraft-npc](https://github.com/cliffano/minecraft-npc) - CLI for running NPC bot on Minecraft, powered by Mineflayer
+* [minecraft-npc](https://github.com/littlegodzillalaboratory/minecraft-npc) - CLI for running NPC bot on Minecraft, powered by Mineflayer
