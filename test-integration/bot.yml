@@ -2,7 +2,7 @@
 - params:
     base: ../../../../..
 
-- description: Set up example bot environment
+- description: Set up test bot environment
   command: 'make -f {base}/test-integration/fixtures/Makefile install-mineflayer-chatgpt'
   exitcode: 0
   output: 'added .* package.*'
@@ -15,12 +15,12 @@
   command: 'sleep 120'
   exitcode: 0
 
-- description: Run example bot, check the bot is spawned
+- description: Run test bot, check the bot is spawned
   command: 'HOST=$(make --no-print-directory -f {base}/test-integration/fixtures/Makefile get-minecraft-server-ip-address | xargs) node {base}/examples/mineflayer-chatgpt-bot.js'
   exitcode: 1
   output: '.*Example bot has been spawned.*'
 
-- description: Run example bot, check for OpenAI error due to lack of API key
+- description: Run test bot, check for OpenAI error due to lack of API key
   command: 'HOST=$(make --no-print-directory -f {base}/test-integration/fixtures/Makefile get-minecraft-server-ip-address | xargs) node {base}/examples/mineflayer-chatgpt-bot.js'
   exitcode: 1
   output: '.*An OpenAI error has occurred.*'
