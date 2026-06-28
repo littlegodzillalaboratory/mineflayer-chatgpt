@@ -1,0 +1,5 @@
+x-post-update-dotfiles:
+	# Bob config does not follow generator template because this package is using cmdt for test-integration
+	git checkout .bob.json
+
+.PHONY: x-post-update-dotfiles
