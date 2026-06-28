@@ -149,3 +149,7 @@ Build reports:
 * [API Documentation](https://littlegodzillalaboratory.github.io/mineflayer-chatgpt/doc/jsdoc/index.html)
 
 <!-- END:BUILD_REPORTS -->
+
+Related projects:
+
+* [minecraft-npc](https://github.com/cliffano/minecraft-npc) - CLI for running NPC bot on Minecraft, powered by Mineflayer
