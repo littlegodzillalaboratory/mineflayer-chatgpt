@@ -142,5 +142,5 @@ Reply confidence score 0.4 is below minimum 0.9
   [32m  [32m✔[39m[0m[90m should wrap OpenAI.APIError and rethrow as a regular Error[0m
 
 
-[92m [0m[32m 100 passing[0m[90m (84ms)[0m
+[92m [0m[32m 100 passing[0m[90m (81ms)[0m
 
