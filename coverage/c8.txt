@@ -1,7 +1,7 @@
-(node:3539) [DEP0151] DeprecationWarning: Package /opt/hostedtoolcache/node/24.17.0/x64/lib/node_modules/bob/node_modules/jazz/ has a "main" field set to "./lib/jazz", excluding the full filename and extension to the resolved file at "lib/jazz.js", imported from /opt/hostedtoolcache/node/24.17.0/x64/lib/node_modules/bob/lib/bob.js.
+(node:3529) [DEP0151] DeprecationWarning: Package /opt/hostedtoolcache/node/26.4.0/x64/lib/node_modules/bob/node_modules/jazz/ has a "main" field set to "./lib/jazz", excluding the full filename and extension to the resolved file at "lib/jazz.js", imported from /opt/hostedtoolcache/node/26.4.0/x64/lib/node_modules/bob/lib/bob.js.
  Automatic extension resolution of the "main" field is deprecated for ES modules.
 (Use `node --trace-deprecation ...` to show where the warning was created)
-test | /opt/hostedtoolcache/node/24.17.0/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
+test | /opt/hostedtoolcache/node/26.4.0/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
 
 [0m[0m
 [0m  client[0m
@@ -146,7 +146,7 @@ Reply confidence score 0.4 is below minimum 0.9
   [32m  [32m✔[39m[0m[90m should wrap OpenAI.APIError and rethrow as a regular Error[0m
 
 
-[92m [0m[32m 100 passing[0m[90m (81ms)[0m
+[92m [0m[32m 100 passing[0m[90m (85ms)[0m
 
 SUCCESS | exit code 0
 -----------------------|---------|----------|---------|---------|-------------------

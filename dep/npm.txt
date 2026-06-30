@@ -1,5 +1,5 @@
 
-up to date, audited 132 packages in 488ms
+up to date, audited 132 packages in 497ms
 
 20 packages are looking for funding
   run `npm fund` for details
@@ -13,3 +13,7 @@ To address all issues (including breaking changes), run:
   npm audit fix --force
 
 Run `npm audit` for details.
+npm warn allow-scripts 1 package has install scripts not yet covered by allowScripts:
+npm warn allow-scripts   es5-ext@0.10.62 (postinstall:  node -e "try{require('./_postinstall')}catch(e){}" || exit 0)
+npm warn allow-scripts
+npm warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.
