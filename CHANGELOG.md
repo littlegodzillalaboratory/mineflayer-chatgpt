@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Upgrade Suntory to 1.3.0
+- Rename mandatory instructions to security instructions
 
 ## 1.2.1 - 2026-06-08
 ### Fixed

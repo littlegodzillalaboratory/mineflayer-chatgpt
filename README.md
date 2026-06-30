@@ -114,7 +114,7 @@ Mineflayer ChatGPT attempts to implement [OWASP Top 10 LLM apps](https://owasp.o
 ### LLM07 - System Prompt Leakage
 
 * Mandatory instructions explicitly forbid revealing system prompts.
-* Prompt leakage detection checks replies against mandatory instruction strings.
+* Prompt leakage detection checks replies against security instruction strings.
 * Suspected leakage is blocked and replaced with `fallbackMessage`.
 
 ### LLM08 - Vector and Embedding Weaknesses

@@ -70,13 +70,13 @@ describe("moderator - sanitiseProfanity", function () {
 });
 
 describe("moderator - detectPromptLeakage", function () {
-  it("should return true when message contains a mandatory instruction", function () {
+  it("should return true when message contains a security instruction", function () {
     const message =
       "Please ignore this. Keep responses concise. Do something else.";
     assert.isTrue(moderator.detectPromptLeakage(message));
   });
 
-  it("should return false when message does not contain mandatory instructions", function () {
+  it("should return false when message does not contain security instructions", function () {
     const message = "How to craft a wooden pickaxe in Minecraft?";
     assert.isFalse(moderator.detectPromptLeakage(message));
   });
