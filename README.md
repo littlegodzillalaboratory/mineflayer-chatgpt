@@ -66,8 +66,9 @@ bot.chatgpt.sendMessage('player', 'How to craft a diamond sword in Minecraft?');
 | Property | Description | Type | Required | Default | Example |
 |----------|-------------|------|----------|---------|---------|
 | model | Chat completion model name. | string | No | gpt-5.2 | gpt-4.1-mini |
-| instructions | Base developer instructions prepended to every conversation. Mandatory safety instructions are always appended internally. | string | No | You are a helpful assistant in a Minecraft world. Answer questions and provide information relevant to the game. | You are a concise Minecraft redstone expert. |
+| instructions | Base developer instructions prepended to every conversation. Security instructions are appended internally when `enableSecurityInstructions` is `true`. | string | No | You are a helpful assistant in a Minecraft world. Answer questions and provide information relevant to the game. | You are a concise Minecraft redstone expert. |
 | historySize | Maximum number of messages kept per-player in memory. | number | No | 20 | 50 |
+| enableSecurityInstructions | Appends security instructions to the base instructions for hardening the model against prompt injection and other LLM threats. | boolean | No | true | false |
 | enableModeration | Enables outbound and inbound moderation checks. | boolean | No | true | false |
 | coolDownInSeconds | Minimum seconds required between a player's latest prior message and the next outbound message. | number | No | 15 | 30 |
 | minimumConfidenceScore | Minimum accepted reply confidence score. Replies below this threshold are replaced by fallbackMessage. | number | No | 0.9 | 0.8 |
@@ -80,7 +81,7 @@ Mineflayer ChatGPT attempts to implement [OWASP Top 10 LLM apps](https://owasp.o
 
 ### LLM01 - Prompt Injection
 
-* Mandatory instruction hardening is always appended to base instructions, including explicit anti-override rules.
+* Security instruction hardening is appended to base instructions when `enableSecurityInstructions` is `true`, including explicit anti-override rules.
 * Jailbreak patterns are detected before outbound moderation via `detectJailbreakAttempt`.
 * Jailbreak-like outbound content is blocked and replaced with `fallbackMessage`.
 
@@ -97,14 +98,14 @@ Mineflayer ChatGPT attempts to implement [OWASP Top 10 LLM apps](https://owasp.o
 
 ### LLM04 - Data and Model Poisoning
 
-* Mandatory instructions include guidance that external content may be untrusted.
+* Security instructions include guidance that external content may be untrusted.
 * TODO: Explicit poisoning classifier, provenance validation, or trust scoring pipeline is implemented. This might be necessary on a modded Minecraft universe.
 
 ### LLM05 - Improper Output Handling
 
 * Slash commands are detected in inbound replies via `detectSlashCommand`.
 * Replies containing slash commands are blocked and replaced with `fallbackMessage`.
-* Mandatory instructions include "Never generate executable commands."
+* Security instructions include "Never generate executable commands."
 
 ### LLM06 - Excessive Agency
 
@@ -113,7 +114,7 @@ Mineflayer ChatGPT attempts to implement [OWASP Top 10 LLM apps](https://owasp.o
 
 ### LLM07 - System Prompt Leakage
 
-* Mandatory instructions explicitly forbid revealing system prompts.
+* Security instructions explicitly forbid revealing system prompts.
 * Prompt leakage detection checks replies against security instruction strings.
 * Suspected leakage is blocked and replaced with `fallbackMessage`.
 
@@ -124,12 +125,12 @@ Mineflayer ChatGPT attempts to implement [OWASP Top 10 LLM apps](https://owasp.o
 
 ### LLM09 - Misinformation
 
-* Mandatory instruction tells the model to avoid fabrication and acknowledge uncertainty.
+* Security instructions tell the model to avoid fabrication and acknowledge uncertainty.
 * Inbound replies are confidence-gated; low-confidence replies are replaced with `fallbackMessage`.
 
 ### LLM10 - Unbounded Consumption
 
-* Mandatory instruction enforces concise responses.
+* Security instructions enforce concise responses.
 * Per-player history is bounded by `historySize`.
 * Outbound message rate is gated with cooldown enforcement (`coolDownInSeconds`).
 
