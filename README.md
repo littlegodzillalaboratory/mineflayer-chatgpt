@@ -137,7 +137,7 @@ Mineflayer ChatGPT attempts to implement [OWASP Top 10 LLM apps](https://owasp.o
 ## Colophon
 
 <!-- BEGIN:DEVELOPERS_GUIDE -->
-[Developer's Guide](https:/cliffano.github.io/developers-guide-nodejs.html)
+[Developer's Guide](https:/littlegodzillalaboratory.github.io/developers-guide-nodejs.html)
 <!-- END:DEVELOPERS_GUIDE -->
 
 <!-- BEGIN:BUILD_REPORTS -->
