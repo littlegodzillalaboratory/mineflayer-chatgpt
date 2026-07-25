@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- Decouple client into message client and moderation client
+
 ## 1.3.0 - 2026-06-30
 ### Added
 - Add Makefile-extras for managing run hooks

@@ -1,6 +1,6 @@
 "use strict";
 import assert from "assert";
-import Client from "../lib/client.js";
+import MessageClient from "../lib/message-client.js";
 import mineflayerChatgpt from "../lib/mineflayer-chatgpt.js";
 import moderator from "../lib/moderator.js";
 import sinon from "sinon";
@@ -8,7 +8,7 @@ import sinon from "sinon";
 describe("mineflayer-chatgpt", function () {
   describe("chatgpt", function () {
     beforeEach(function () {
-      this.mockClient = sinon.mock(Client.prototype);
+      this.mockClient = sinon.mock(MessageClient.prototype);
       this.mockConsole = sinon.mock(console);
 
       this.chatCallsCount = 0;
@@ -31,7 +31,9 @@ describe("mineflayer-chatgpt", function () {
     });
     it("should set config when setConfig is called with opts", function () {
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123", {
+      this.mockBot.chatgpt.setConfig({
+        messageApiKey: "sk-123",
+        moderationApiKey: "sk-456",
         model: "gpt-5.2",
         historySize: 20,
         enableModeration: true,
@@ -39,7 +41,10 @@ describe("mineflayer-chatgpt", function () {
     });
     it("should set config when setConfig is called without opts", function () {
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123");
+      this.mockBot.chatgpt.setConfig({
+        messageApiKey: "sk-123",
+        moderationApiKey: "sk-456",
+      });
     });
     it("should call client chat when sendMessage is called without error", async function () {
       this.mockClient
@@ -63,7 +68,10 @@ describe("mineflayer-chatgpt", function () {
           flagged: false,
         });
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123");
+      this.mockBot.chatgpt.setConfig({
+        messageApiKey: "sk-123",
+        moderationApiKey: "sk-456",
+      });
       const reply = await this.mockBot.chatgpt.sendMessage(
         "someplayer",
         "Hello",
@@ -98,7 +106,10 @@ describe("mineflayer-chatgpt", function () {
         flagged: false,
       });
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123");
+      this.mockBot.chatgpt.setConfig({
+        messageApiKey: "sk-123",
+        moderationApiKey: "sk-456",
+      });
       try {
         await this.mockBot.chatgpt.sendMessage("someplayer", "Hello");
         assert.fail("Expected an error to be thrown");
@@ -126,7 +137,10 @@ describe("mineflayer-chatgpt", function () {
         flagged: false,
       });
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123");
+      this.mockBot.chatgpt.setConfig({
+        messageApiKey: "sk-123",
+        moderationApiKey: "sk-456",
+      });
       try {
         await this.mockBot.chatgpt.sendMessage("someplayer", "Hello");
         assert.fail("Expected an error to be thrown");
@@ -161,7 +175,9 @@ describe("mineflayer-chatgpt", function () {
         flagged: false,
       });
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123", {
+      this.mockBot.chatgpt.setConfig({
+        messageApiKey: "sk-123",
+        moderationApiKey: "sk-456",
         enableMessageLogging: true,
       });
       const reply = await this.mockBot.chatgpt.sendMessage(
@@ -189,7 +205,9 @@ describe("mineflayer-chatgpt", function () {
         flagged: false,
       });
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123", {
+      this.mockBot.chatgpt.setConfig({
+        messageApiKey: "sk-123",
+        moderationApiKey: "sk-456",
         enableMessageLogging: false,
       });
       const reply = await this.mockBot.chatgpt.sendMessage(
@@ -221,7 +239,9 @@ describe("mineflayer-chatgpt", function () {
         });
       this.mockConsole.expects("warn").never();
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123", {
+      this.mockBot.chatgpt.setConfig({
+        messageApiKey: "sk-123",
+        moderationApiKey: "sk-456",
         fallbackMessage: "Custom fallback message",
       });
       const reply = await this.mockBot.chatgpt.sendMessage(
@@ -242,7 +262,9 @@ describe("mineflayer-chatgpt", function () {
         });
       const moderateInboundStub = sinon.stub(moderator, "moderateInboundReply");
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123", {
+      this.mockBot.chatgpt.setConfig({
+        messageApiKey: "sk-123",
+        moderationApiKey: "sk-456",
         fallbackMessage: "Custom fallback message",
       });
       const reply = await this.mockBot.chatgpt.sendMessage(
@@ -277,7 +299,9 @@ describe("mineflayer-chatgpt", function () {
         });
       this.mockConsole.expects("warn").never();
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123", {
+      this.mockBot.chatgpt.setConfig({
+        messageApiKey: "sk-123",
+        moderationApiKey: "sk-456",
         fallbackMessage: "Custom fallback message",
       });
       const reply = await this.mockBot.chatgpt.sendMessage(
@@ -312,7 +336,9 @@ describe("mineflayer-chatgpt", function () {
         });
       this.mockConsole.expects("warn").never();
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123", {
+      this.mockBot.chatgpt.setConfig({
+        messageApiKey: "sk-123",
+        moderationApiKey: "sk-456",
         fallbackMessage: "Custom fallback message",
       });
       const reply = await this.mockBot.chatgpt.sendMessage(
@@ -347,7 +373,10 @@ describe("mineflayer-chatgpt", function () {
         });
       this.mockConsole.expects("warn").never();
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123");
+      this.mockBot.chatgpt.setConfig({
+        messageApiKey: "sk-123",
+        moderationApiKey: "sk-456",
+      });
       const reply = await this.mockBot.chatgpt.sendMessage(
         "someplayer",
         "Hello",
@@ -393,7 +422,9 @@ describe("mineflayer-chatgpt", function () {
         });
       this.mockConsole.expects("warn").never();
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123", {
+      this.mockBot.chatgpt.setConfig({
+        messageApiKey: "sk-123",
+        moderationApiKey: "sk-456",
         minimumConfidenceScore: 0.8,
       });
       const reply = await this.mockBot.chatgpt.sendMessage(
@@ -436,7 +467,9 @@ describe("mineflayer-chatgpt", function () {
       });
       this.mockConsole.expects("warn").never();
       mineflayerChatgpt.chatgpt(this.mockBot);
-      this.mockBot.chatgpt.setConfig("sk-123", {
+      this.mockBot.chatgpt.setConfig({
+        messageApiKey: "sk-123",
+        moderationApiKey: "sk-456",
         coolDownInSeconds: 30,
       });
       const reply = await this.mockBot.chatgpt.sendMessage(

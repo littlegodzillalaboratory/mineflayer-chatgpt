@@ -17,7 +17,10 @@ bot.loadPlugin(mineflayerChatgpt.chatgpt);
 
 console.log('Spawning example bot...');
 bot.once('spawn', () => {
-  bot.chatgpt.setConfig('sk-someinexistingapikey');
+  bot.chatgpt.setConfig({
+    messageApiKey: 'sk-someapikey1',
+    moderationApiKey: 'sk-someapikey2'
+  });
   bot.chatgpt.sendMessage('otherplayer', 'Hello');
   console.log('Example bot has been spawned');
   // Since we don't use a valid API key, the above call will log the following error message:

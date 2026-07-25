@@ -1,7 +1,5 @@
 "use strict";
 import leoProfanity from "leo-profanity";
-import Client from "../lib/client.js";
-import OpenAI from "openai";
 import moderator from "../lib/moderator.js";
 import referee from "@sinonjs/referee";
 import sinon from "sinon";
@@ -528,100 +526,5 @@ describe("moderator - moderateInboundReply", function () {
       ),
     );
     assert.isTrue(createStub.notCalled);
-  });
-});
-
-describe("client - moderate", function () {
-  afterEach(function () {
-    sinon.restore();
-  });
-
-  it("should return unflagged result when content is safe", async function () {
-    const client = new Client("sk-test-key");
-    client.openAI = {
-      moderations: {
-        create: sinon.stub().resolves({
-          results: [
-            {
-              flagged: false,
-              categories: { hate: false, violence: false, sexual: false },
-              category_scores: { hate: 0.01, violence: 0.02, sexual: 0.01 },
-            },
-          ],
-        }),
-      },
-    };
-    const result = await client.moderate("Hello, how are you?");
-    assert.isFalse(result.flagged);
-    assert.equals(result.message, "Hello, how are you?");
-    assert.isFalse(result.categories.hate);
-  });
-
-  it("should return flagged result when content violates policy", async function () {
-    const client = new Client("sk-test-key");
-    client.openAI = {
-      moderations: {
-        create: sinon.stub().resolves({
-          results: [
-            {
-              flagged: true,
-              categories: { hate: true, violence: false, sexual: false },
-              category_scores: { hate: 0.95, violence: 0.02, sexual: 0.01 },
-            },
-          ],
-        }),
-      },
-    };
-    const result = await client.moderate("hateful message");
-    assert.isTrue(result.flagged);
-    assert.equals(result.message, "hateful message");
-    assert.isTrue(result.categories.hate);
-  });
-
-  it("should pass message to OpenAI moderation API", async function () {
-    const client = new Client("sk-test-key");
-    const createStub = sinon.stub().resolves({
-      results: [
-        {
-          flagged: false,
-          categories: {},
-          category_scores: {},
-        },
-      ],
-    });
-    client.openAI = {
-      moderations: { create: createStub },
-    };
-    await client.moderate("test message");
-    assert.isTrue(createStub.calledWith({ input: "test message" }));
-  });
-
-  it("should wrap OpenAI.APIError and rethrow as a regular Error", async function () {
-    const client = new Client("sk-test-key");
-    client.openAI = {
-      moderations: {
-        create: sinon.stub().rejects(
-          new OpenAI.APIError(
-            401,
-            {
-              type: "invalid_request_error",
-              code: "invalid_api_key",
-              message: "Incorrect API key provided",
-            },
-            "Incorrect API key provided",
-            { get: () => undefined },
-          ),
-        ),
-      },
-    };
-
-    try {
-      await client.moderate("test message");
-      assert.fail("Expected an error to be thrown");
-    } catch (error) {
-      assert.isFalse(error instanceof OpenAI.APIError);
-      assert.isTrue(error.message.includes("An OpenAI error has occurred"));
-      assert.isTrue(error.message.includes("invalid_api_key"));
-    }
   });
 });
