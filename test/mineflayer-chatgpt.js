@@ -34,7 +34,7 @@ describe("mineflayer-chatgpt", function () {
       this.mockBot.chatgpt.setConfig({
         messageApiKey: "sk-123",
         moderationApiKey: "sk-456",
-        model: "gpt-5.2",
+        model: "gpt-5.6",
         historySize: 20,
         enableModeration: true,
       });

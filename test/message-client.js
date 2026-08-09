@@ -71,7 +71,7 @@ describe("message-client", function () {
             create: function (params) {
               assert.equal(params.messages[1].role, "user");
               assert.equal(params.messages[1].content, "Hello");
-              assert.equal(params.model, "gpt-5.2");
+              assert.equal(params.model, "gpt-5.6");
               assert.equal(params.temperature, 0);
               assert.equal(params.logprobs, true);
               assert.equal(params.top_logprobs, 3);
@@ -164,9 +164,9 @@ describe("message-client", function () {
 
     it("should use custom model when provided in options", function () {
       const clientWithOpts = new MessageClient("sk-test-key", {
-        model: "gpt-5.2",
+        model: "gpt-5.6",
       });
-      assert.equal(clientWithOpts.opts.model, "gpt-5.2");
+      assert.equal(clientWithOpts.opts.model, "gpt-5.6");
     });
 
     it("should keep completion confidence options internal", async function () {
