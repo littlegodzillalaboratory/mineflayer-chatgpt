@@ -13,7 +13,7 @@
 
 # Mineflayer ChatGPT
 
-Mineflayer ChatGPT is a [Mineflayer](https://github.com/PrismarineJS/mineflayer) plugin for sending and receiving messages with OpenAI [ChatGPT](https://chat.openai.com/).
+Mineflayer ChatGPT is a [Mineflayer](https://github.com/PrismarineJS/mineflayer) plugin for sending and receiving messages with OpenAI [ChatGPT](https://chat.openai.com/) or any other services having OpenAI-compatible API.
 
 ## Installation
 
