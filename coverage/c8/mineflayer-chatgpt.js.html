@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>105/105</span>
+                <span class='fraction'>117/117</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">93.75% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>16/16</span>
+                <span class='fraction'>15/16</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>105/105</span>
+                <span class='fraction'>117/117</span>
             </div>
         
             
@@ -168,7 +168,20 @@
 <a name='L103'></a><a href='#L103'>103</a>
 <a name='L104'></a><a href='#L104'>104</a>
 <a name='L105'></a><a href='#L105'>105</a>
-<a name='L106'></a><a href='#L106'>106</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -205,6 +218,17 @@
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-yes">14x</span>
@@ -274,7 +298,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
-import Client from "./client.js";
+import MessageClient from "./message-client.js";
+import ModerationClient from "./moderation-client.js";
 import Memory from "./memory.js";
 import moderator from "./moderator.js";
 &nbsp;
@@ -294,7 +319,8 @@ let memory;
  * @param {object} bot - Mineflayer bot instance.
  */
 function chatgpt(bot) {
-  let client;
+  let messageClient;
+  let moderationClient;
   let enableModeration;
   let enableMessageLogging;
   let minimumConfidenceScore;
@@ -306,11 +332,13 @@ function chatgpt(bot) {
   /**
    * Configure the plugin instance.
    *
-   * @param {string} apiKey - OpenAI API key.
    * @param {object} [opts={}] - Plugin options.
+   * @param {string} opts.messageApiKey - API key for the chat completion endpoint. Can be a placeholder value when `messageBaseURL` points at a local LLM server (e.g. vMLX) that doesn't require authentication.
+   * @param {string} [opts.moderationApiKey] - OpenAI API key used for moderation. Required when `enableModeration` is `true`.
+   * @param {string} [opts.messageBaseURL] - Base URL of the chat completion endpoint. Set this to use a local OpenAI-compatible LLM server (e.g. vMLX) instead of OpenAI.
    */
-  bot.chatgpt.setConfig = (apiKey, opts) =&gt; {
-    opts = opts || {};
+  bot.chatgpt.setConfig = (opts) =&gt; {
+    opts = opts <span class="branch-0 cbranch-no" title="branch not covered" >|| {};</span>
     enableModeration = opts.enableModeration ?? DEFAULT_ENABLE_MODERATION;
     enableMessageLogging =
       opts.enableMessageLogging ?? DEFAULT_ENABLE_MESSAGE_LOGGING;
@@ -320,7 +348,15 @@ function chatgpt(bot) {
     fallbackMessage = opts.fallbackMessage || DEFAULT_FALLBACK_MESSAGE;
     opts.enableSecurityInstructions =
       opts.enableSecurityInstructions ?? DEFAULT_ENABLE_SECURITY_INSTRUCTIONS;
-    client = new Client(apiKey, opts);
+    messageClient = new MessageClient(opts.messageApiKey, {
+      model: opts.model,
+      instructions: opts.instructions,
+      enableSecurityInstructions: opts.enableSecurityInstructions,
+      baseURL: opts.messageBaseURL,
+    });
+    if (enableModeration === true) {
+      moderationClient = new ModerationClient(opts.moderationApiKey);
+    }
     memory = new Memory(opts.historySize);
   };
 &nbsp;
@@ -335,7 +371,7 @@ function chatgpt(bot) {
     try {
       if (enableModeration === true) {
         const moderatedOutbound = await moderator.moderateOutboundMessage(
-          client,
+          moderationClient,
           memory,
           player,
           message,
@@ -348,13 +384,13 @@ function chatgpt(bot) {
         message = moderatedOutbound.message;
       }
 &nbsp;
-      const chatResult = await client.chat(memory, player, message);
+      const chatResult = await messageClient.chat(memory, player, message);
       let reply = chatResult.reply;
       const confidenceScore = chatResult.confidenceScore;
 &nbsp;
       if (enableModeration === true) {
         const moderatedInbound = await moderator.moderateInboundReply(
-          client,
+          moderationClient,
           reply,
           fallbackMessage,
           confidenceScore,
@@ -385,7 +421,7 @@ export { exports as default };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-06-30T02:26:32.499Z
+                at 2026-08-09T14:00:45.663Z
             </div>
         <script src="prettify.js"></script>
         <script>

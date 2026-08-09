@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>message.js - Documentation</title>
+    <title>moderation-client.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">message.js</h1>
+    <h1 class="page-title">moderation-client.js</h1>
     
 
     
@@ -40,56 +40,55 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
+import OpenAI from "openai";
 
 /**
- * Message payload sent to OpenAI API.
- * A message consists of a role, content, and timestamp.
+ * OpenAI moderation client wrapper.
  *
  * @class
  */
-class Message {
+class ModerationClient {
   /**
-   * Initializes a new Message instance.
+   * Initializes a new moderation client.
    *
-   * @param {string} role - Message role such as `user`, `assistant`, or `developer`.
-   * @param {string} content - Message content.
-   * @param {number} [timestamp=Date.now()] - Unix timestamp in milliseconds.
+   * @param {string} moderationApiKey - OpenAI API key used for the moderation endpoint.
    */
-  constructor(role, content, timestamp = Date.now()) {
-    this.role = role;
-    this.content = content;
-    this.timestamp = timestamp;
+  constructor(moderationApiKey) {
+    this.openAI = new OpenAI({
+      apiKey: moderationApiKey,
+    });
   }
 
   /**
-   * Retrieve the role of the message.
+   * Use OpenAI's moderation API to check if the message violates content policy.
    *
-   * @returns {string} Message role.
+   * @param {string} message - Message text to moderate.
+   * @returns {Promise&lt;object>} Moderation result object.
    */
-  getRole() {
-    return this.role;
-  }
-
-  /**
-   * Retrieve the content of the message.
-   *
-   * @returns {string} Message content.
-   */
-  getContent() {
-    return this.content;
-  }
-
-  /**
-   * Retrieve the timestamp of the message.
-   *
-   * @returns {number} Unix timestamp in milliseconds.
-   */
-  getTimestamp() {
-    return this.timestamp;
+  async moderate(message) {
+    try {
+      const moderation = await this.openAI.moderations.create({
+        input: message,
+      });
+      const result = moderation.results[0];
+      return {
+        flagged: result.flagged,
+        categories: result.categories,
+        category_scores: result.category_scores,
+        message: message,
+      };
+    } catch (error) {
+      if (error instanceof OpenAI.APIError) {
+        error = new Error(
+          `An OpenAI error has occurred: ${error.status} ${error.type} ${error.code} ${error.message}`,
+        );
+      }
+      throw error;
+    }
   }
 }
 
-export { Message as default };
+export { ModerationClient as default };
 </code></pre>
         </article>
     </section>

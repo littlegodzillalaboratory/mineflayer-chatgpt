@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>message.js - Documentation</title>
+    <title>ModerationClient - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,70 +29,353 @@
 
 <div id="main">
     
-    <h1 class="page-title">message.js</h1>
+    <h1 class="page-title">ModerationClient</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>"use strict";
+        <h2>
+        ModerationClient
+        </h2>
+        
+            <div class="class-description">OpenAI moderation client wrapper.</div>
+        
+    
+</header>
 
-/**
- * Message payload sent to OpenAI API.
- * A message consists of a role, content, and timestamp.
- *
- * @class
- */
-class Message {
-  /**
-   * Initializes a new Message instance.
-   *
-   * @param {string} role - Message role such as `user`, `assistant`, or `developer`.
-   * @param {string} content - Message content.
-   * @param {number} [timestamp=Date.now()] - Unix timestamp in milliseconds.
-   */
-  constructor(role, content, timestamp = Date.now()) {
-    this.role = role;
-    this.content = content;
-    this.timestamp = timestamp;
-  }
+<article>
+    <div class="container-overview">
+    
+        
+<div class="section-method">
 
-  /**
-   * Retrieve the role of the message.
-   *
-   * @returns {string} Message role.
-   */
-  getRole() {
-    return this.role;
-  }
+    
+    <h2>Constructor</h2>
+    
 
-  /**
-   * Retrieve the content of the message.
-   *
-   * @returns {string} Message content.
-   */
-  getContent() {
-    return this.content;
-  }
+    <h4 class="name" id="ModerationClient"><span class="type-signature"></span>new ModerationClient<span class="signature">(moderationApiKey)</span><span class="type-signature"></span></h4>
 
-  /**
-   * Retrieve the timestamp of the message.
-   *
-   * @returns {number} Unix timestamp in milliseconds.
-   */
-  getTimestamp() {
-    return this.timestamp;
-  }
-}
+    
 
-export { Message as default };
-</code></pre>
-        </article>
-    </section>
+
+
+<div class="description">
+    Initializes a new moderation client.
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="moderation-client.js.html">moderation-client.js</a>, <a href="moderation-client.js.html#line9">line 9</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>moderationApiKey</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                OpenAI API key used for the moderation endpoint.
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="moderate"><span class="type-signature">(async) </span>moderate<span class="signature">(message)</span><span class="type-signature"> &rarr; {Promise.&lt;object>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Use OpenAI's moderation API to check if the message violates content policy.
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="moderation-client.js.html">moderation-client.js</a>, <a href="moderation-client.js.html#line27">line 27</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Message text to moderate.
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Promise.&lt;object></code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    Moderation result object.
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

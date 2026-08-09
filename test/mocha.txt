@@ -1,24 +1,5 @@
 
 [0m[0m
-[0m  client[0m
-[0m    confidence score helpers[0m
-    [32m  [32m✔[39m[0m[90m should clamp confidence score to range 0..1[0m
-    [32m  [32m✔[39m[0m[90m should extract confidenceScore from message camelCase field[0m
-    [32m  [32m✔[39m[0m[90m should extract confidenceScore from message snake_case field[0m
-    [32m  [32m✔[39m[0m[90m should derive confidenceScore from token logprobs[0m
-    [32m  [32m✔[39m[0m[90m should default confidenceScore to 1 when unavailable[0m
-[0m    chat with OpenAI API[0m
-    [32m  [32m✔[39m[0m[90m should return a reply from chat completion message[0m
-    [32m  [32m✔[39m[0m[90m should register messages to memory[0m
-    [32m  [32m✔[39m[0m[90m should include conversation history for existing players[0m
-    [32m  [32m✔[39m[0m[90m should use custom model when provided in options[0m
-    [32m  [32m✔[39m[0m[90m should keep completion confidence options internal[0m
-    [32m  [32m✔[39m[0m[90m should moderate content through OpenAI moderation API[0m
-    [32m  [32m✔[39m[0m[90m should wrap OpenAI.APIError from moderation API and rethrow as a regular Error[0m
-    [32m  [32m✔[39m[0m[90m should use custom instructions when provided in options[0m
-    [32m  [32m✔[39m[0m[90m should append security instructions to default instructions[0m
-    [32m  [32m✔[39m[0m[90m should wrap OpenAI.APIError and rethrow as a regular Error[0m
-
 [0m  conversation[0m
 [0m    manage messages[0m
     [32m  [32m✔[39m[0m[90m should start with an empty messages list[0m
@@ -46,6 +27,24 @@
     [32m  [32m✔[39m[0m[90m should pass size to conversations created via retrieve[0m
     [32m  [32m✔[39m[0m[90m should enforce size limit when registering messages[0m
     [32m  [32m✔[39m[0m[90m should enforce size limit per player independently[0m
+
+[0m  message-client[0m
+[0m    confidence score helpers[0m
+    [32m  [32m✔[39m[0m[90m should clamp confidence score to range 0..1[0m
+    [32m  [32m✔[39m[0m[90m should extract confidenceScore from message camelCase field[0m
+    [32m  [32m✔[39m[0m[90m should extract confidenceScore from message snake_case field[0m
+    [32m  [32m✔[39m[0m[90m should derive confidenceScore from token logprobs[0m
+    [32m  [32m✔[39m[0m[90m should default confidenceScore to 1 when unavailable[0m
+[0m    chat with OpenAI API[0m
+    [32m  [32m✔[39m[0m[90m should return a reply from chat completion message[0m
+    [32m  [32m✔[39m[0m[90m should register messages to memory[0m
+    [32m  [32m✔[39m[0m[90m should include conversation history for existing players[0m
+    [32m  [32m✔[39m[0m[90m should use custom model when provided in options[0m
+    [32m  [32m✔[39m[0m[90m should keep completion confidence options internal[0m
+    [32m  [32m✔[39m[0m[90m should use custom instructions when provided in options[0m
+    [32m  [32m✔[39m[0m[90m should append security instructions to default instructions[0m
+    [32m  [32m✔[39m[0m[90m should use a custom baseURL when provided in options, for a local LLM server[0m
+    [32m  [32m✔[39m[0m[90m should wrap OpenAI.APIError and rethrow as a regular Error[0m
 
 [0m  message[0m
 [0m    retrieve properties[0m
@@ -77,6 +76,10 @@
     [32m  [32m✔[39m[0m[90m should return fallback message when reply confidence score is below minimum[0m
     [32m  [32m✔[39m[0m[90m should use custom minimumConfidenceScore when provided[0m
     [32m  [32m✔[39m[0m[90m should use custom coolDownInSeconds when provided[0m
+
+[0m  moderation-client[0m
+  [32m  [32m✔[39m[0m[90m should moderate content through OpenAI moderation API[0m
+  [32m  [32m✔[39m[0m[90m should wrap OpenAI.APIError from moderation API and rethrow as a regular Error[0m
 
 [0m  moderator - sanitiseProfanity[0m
   [32m  [32m✔[39m[0m[90m should return clean text when input contains no profanity[0m
@@ -135,12 +138,6 @@ Reply confidence score 0.4 is below minimum 0.9
   [32m  [32m✔[39m[0m[90m should return fallback when reply is flagged by moderation[0m
   [32m  [32m✔[39m[0m[90m should return fallback when reply contains secret credential[0m
 
-[0m  client - moderate[0m
-  [32m  [32m✔[39m[0m[90m should return unflagged result when content is safe[0m
-  [32m  [32m✔[39m[0m[90m should return flagged result when content violates policy[0m
-  [32m  [32m✔[39m[0m[90m should pass message to OpenAI moderation API[0m
-  [32m  [32m✔[39m[0m[90m should wrap OpenAI.APIError and rethrow as a regular Error[0m
 
-
-[92m [0m[32m 100 passing[0m[90m (87ms)[0m
+[92m [0m[32m 97 passing[0m[90m (81ms)[0m
 
