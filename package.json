@@ -31,11 +31,11 @@
   "dependencies": {
     "leo-profanity": "^1.9.0",
     "mineflayer": "^4.37.1",
-    "openai": "^6.45.0"
+    "openai": "^7.4.0"
   },
   "devDependencies": {
     "@sinonjs/referee": "^11.0.2",
-    "sinon": "^22.0.0"
+    "sinon": "^22.1.0"
   },
   "scripts": {},
   "engines": {
