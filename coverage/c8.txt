@@ -1,4 +1,4 @@
-(node:3228) [DEP0151] DeprecationWarning: Package /opt/hostedtoolcache/node/24.19.0/x64/lib/node_modules/bob/node_modules/jazz/ has a "main" field set to "./lib/jazz", excluding the full filename and extension to the resolved file at "lib/jazz.js", imported from /opt/hostedtoolcache/node/24.19.0/x64/lib/node_modules/bob/lib/bob.js.
+(node:3130) [DEP0151] DeprecationWarning: Package /opt/hostedtoolcache/node/24.19.0/x64/lib/node_modules/bob/node_modules/jazz/ has a "main" field set to "./lib/jazz", excluding the full filename and extension to the resolved file at "lib/jazz.js", imported from /opt/hostedtoolcache/node/24.19.0/x64/lib/node_modules/bob/lib/bob.js.
  Automatic extension resolution of the "main" field is deprecated for ES modules.
 (Use `node --trace-deprecation ...` to show where the warning was created)
 test | /opt/hostedtoolcache/node/24.19.0/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
@@ -143,7 +143,7 @@ Reply confidence score 0.4 is below minimum 0.9
   [32m  [32m✔[39m[0m[90m should return fallback when reply contains secret credential[0m
 
 
-[92m [0m[32m 97 passing[0m[90m (82ms)[0m
+[92m [0m[32m 97 passing[0m[90m (78ms)[0m
 
 SUCCESS | exit code 0
 -----------------------|---------|----------|---------|---------|-------------------
