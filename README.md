@@ -47,7 +47,7 @@ Set the configuration:
 bot.chatgpt.setConfig({
     messageApiKey: 'sk-1234567890abcdef',
     moderationApiKey: 'sk-1234567890abcdef',
-    model: 'gpt-5.2',
+    model: 'gpt-5.6',
     historySize: 20,
     enableModeration: true,
     coolDownInSeconds: 15,
@@ -79,7 +79,7 @@ bot.chatgpt.sendMessage('player', 'How to craft a diamond sword in Minecraft?');
 | messageApiKey | API key for the chat completion endpoint. Can be any placeholder value for local LLM servers that don't require authentication. | string | Yes | - | sk-1234567890abcdef |
 | moderationApiKey | OpenAI API key used for moderation. Required when `enableModeration` is `true`. | string | Only if enableModeration is true | - | sk-1234567890abcdef |
 | messageBaseURL | Base URL of the chat completion endpoint. Set this to use a local OpenAI-compatible LLM server (e.g. vMLX) instead of OpenAI. | string | No | OpenAI's default base URL | http://localhost:8080/v1 |
-| model | Chat completion model name. | string | No | gpt-5.2 | gpt-4.1-mini |
+| model | Chat completion model name. | string | No | gpt-5.6 | gpt-5.6-sol |
 | instructions | Base developer instructions prepended to every conversation. Security instructions are appended internally when `enableSecurityInstructions` is `true`. | string | No | You are a helpful assistant in a Minecraft world. Answer questions and provide information relevant to the game. | You are a concise Minecraft redstone expert. |
 | historySize | Maximum number of messages kept per-player in memory. | number | No | 20 | 50 |
 | enableSecurityInstructions | Appends security instructions to the base instructions for hardening the model against prompt injection and other LLM threats. | boolean | No | true | false |
