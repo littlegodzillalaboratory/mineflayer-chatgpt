@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 1.4.0 - 2026-08-19
 ### Changed
 - Decouple client into message client and moderation client
+- Replace hard-coded secret patterns with Secretlint's recommended rules
 - Upgrade Suntory to 1.6.0
 - Set default model to gpt-5.6
 

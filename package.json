@@ -29,6 +29,8 @@
     "test": "./test"
   },
   "dependencies": {
+    "@secretlint/core": "^13.0.5",
+    "@secretlint/secretlint-rule-preset-recommend": "^13.0.5",
     "leo-profanity": "^1.9.0",
     "mineflayer": "^4.37.1",
     "openai": "^7.5.0"
