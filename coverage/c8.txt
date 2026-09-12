@@ -1,7 +1,4 @@
-(node:2983) [DEP0151] DeprecationWarning: Package /opt/hostedtoolcache/node/26.7.0/x64/lib/node_modules/bob/node_modules/jazz/ has a "main" field set to "./lib/jazz", excluding the full filename and extension to the resolved file at "lib/jazz.js", imported from /opt/hostedtoolcache/node/26.7.0/x64/lib/node_modules/bob/lib/bob.js.
- Automatic extension resolution of the "main" field is deprecated for ES modules.
-(Use `node --trace-deprecation ...` to show where the warning was created)
-test | /opt/hostedtoolcache/node/26.7.0/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
+test | /opt/hostedtoolcache/node/22.23.2/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
 
 [0m[0m
 [0m  conversation[0m
@@ -109,11 +106,9 @@ test | /opt/hostedtoolcache/node/26.7.0/x64/lib/node_modules/bob/node_modules/.b
   [32m  [32m✔[39m[0m[90m should return false when no jailbreak attempt is present[0m
 
 [0m  moderator - detectSecretsCredentials[0m
-  [32m  [32m✔[39m[0m[90m should detect API key style credential[0m
-  [32m  [32m✔[39m[0m[90m should detect secret assignment pattern[0m
-  [32m  [32m✔[39m[0m[90m should detect GCP API key pattern[0m
-  [32m  [32m✔[39m[0m[90m should detect Azure connection string pattern[0m
-  [32m  [32m✔[39m[0m[90m should detect Azure SAS token pattern[0m
+  [32m  [32m✔[39m[0m[90m should detect an OpenAI API token[0m
+  [32m  [32m✔[39m[0m[90m should detect a GitHub personal access token[0m
+  [32m  [32m✔[39m[0m[90m should detect a database connection string[0m
   [32m  [32m✔[39m[0m[90m should return false when no secret-like content is present[0m
 
 [0m  moderator - checkConfidenceScore[0m
@@ -143,13 +138,13 @@ Reply confidence score 0.4 is below minimum 0.9
   [32m  [32m✔[39m[0m[90m should return fallback when reply contains secret credential[0m
 
 
-[92m [0m[32m 97 passing[0m[90m (63ms)[0m
+[92m [0m[32m 95 passing[0m[90m (102ms)[0m
 
 SUCCESS | exit code 0
 -----------------------|---------|----------|---------|---------|-------------------
 File                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -----------------------|---------|----------|---------|---------|-------------------
-All files              |     100 |    98.05 |     100 |     100 |                   
+All files              |     100 |    98.03 |     100 |     100 |                   
  conversation.js       |     100 |      100 |     100 |     100 |                   
  memory.js             |     100 |      100 |     100 |     100 |                   
  message-client.js     |     100 |    96.29 |     100 |     100 | 46                
