@@ -77,7 +77,7 @@ bot.chatgpt.sendMessage('player', 'How to craft a diamond sword in Minecraft?');
 | Property | Description | Type | Required | Default | Example |
 |----------|-------------|------|----------|---------|---------|
 | messageApiKey | API key for the chat completion endpoint. Can be any placeholder value for local LLM servers that don't require authentication. | string | Yes | - | sk-1234567890abcdef |
-| moderationApiKey | OpenAI API key used for moderation. Required when `enableModeration` is `true`. | string | Only if enableModeration is true | - | sk-1234567890abcdef |
+| moderationApiKey | OpenAI API key used for moderation and OpenAI Guardrails jailbreak detection. Required when `enableModeration` is `true`. | string | Only if enableModeration is true | - | sk-1234567890abcdef |
 | messageBaseURL | Base URL of the chat completion endpoint. Set this to use a local OpenAI-compatible LLM server (e.g. vMLX) instead of OpenAI. | string | No | OpenAI's default base URL | http://localhost:8080/v1 |
 | model | Chat completion model name. | string | No | gpt-5.6 | gpt-5.6-sol |
 | instructions | Base developer instructions prepended to every conversation. Security instructions are appended internally when `enableSecurityInstructions` is `true`. | string | No | You are a helpful assistant in a Minecraft world. Answer questions and provide information relevant to the game. | You are a concise Minecraft redstone expert. |
@@ -86,6 +86,7 @@ bot.chatgpt.sendMessage('player', 'How to craft a diamond sword in Minecraft?');
 | enableModeration | Enables outbound and inbound moderation checks. | boolean | No | true | false |
 | coolDownInSeconds | Minimum seconds required between a player's latest prior message and the next outbound message. | number | No | 15 | 30 |
 | minimumConfidenceScore | Minimum accepted reply confidence score. Replies below this threshold are replaced by fallbackMessage. | number | No | 0.9 | 0.8 |
+| minimumJailbreakConfidenceScore | Minimum OpenAI Guardrails confidence required to classify an outbound message as a jailbreak attempt. | number (0–1) | No | 0.7 | 0.8 |
 | enableMessageLogging | Logs model replies to console output. | boolean | No | false | true |
 | fallbackMessage | Response returned when moderation, cooldown, or confidence checks fail. | string | No | Sorry, I cannot provide a response to that message. | Please wait a moment before sending another message. |
 
@@ -96,7 +97,7 @@ Mineflayer ChatGPT attempts to implement [OWASP Top 10 LLM apps](https://owasp.o
 ### LLM01 - Prompt Injection
 
 * Security instruction hardening is appended to base instructions when `enableSecurityInstructions` is `true`, including explicit anti-override rules.
-* Jailbreak patterns are detected before outbound moderation via `detectJailbreakAttempt`.
+* Jailbreak attempts are detected before outbound moderation via OpenAI Guardrails. The sensitivity is configured with `minimumJailbreakConfidenceScore`.
 * Jailbreak-like outbound content is blocked and replaced with `fallbackMessage`.
 
 ### LLM02 - Sensitive Information Disclosure

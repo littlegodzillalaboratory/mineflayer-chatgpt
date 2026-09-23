@@ -29,6 +29,7 @@
     "test": "./test"
   },
   "dependencies": {
+    "@openai/guardrails": "^0.3.0",
     "@secretlint/core": "^13.0.5",
     "@secretlint/secretlint-rule-preset-recommend": "^13.0.5",
     "leo-profanity": "^1.9.0",
@@ -41,7 +42,7 @@
   },
   "scripts": {},
   "engines": {
-    "node": ">= 22.0.0"
+    "node": "^22.13.0 || >=24.0.0"
   },
   "licenses": [
     {

@@ -46,6 +46,30 @@ describe("mineflayer-chatgpt", function () {
         moderationApiKey: "sk-456",
       });
     });
+    it("should reject jailbreak confidence thresholds outside 0 and 1", function () {
+      mineflayerChatgpt.chatgpt(this.mockBot);
+      assert.throws(
+        () =>
+          this.mockBot.chatgpt.setConfig({
+            messageApiKey: "sk-123",
+            moderationApiKey: "sk-456",
+            minimumJailbreakConfidenceScore: 1.1,
+          }),
+        /minimumJailbreakConfidenceScore must be between 0 and 1/,
+      );
+    });
+    it("should reject a non-numeric jailbreak confidence threshold", function () {
+      mineflayerChatgpt.chatgpt(this.mockBot);
+      assert.throws(
+        () =>
+          this.mockBot.chatgpt.setConfig({
+            messageApiKey: "sk-123",
+            moderationApiKey: "sk-456",
+            minimumJailbreakConfidenceScore: "high",
+          }),
+        /minimumJailbreakConfidenceScore must be between 0 and 1/,
+      );
+    });
     it("should call client chat when sendMessage is called without error", async function () {
       this.mockClient
         .expects("chat")
@@ -488,6 +512,42 @@ describe("mineflayer-chatgpt", function () {
         ),
         true,
       );
+    });
+
+    it("should use custom minimumJailbreakConfidenceScore when provided", async function () {
+      this.mockClient
+        .expects("chat")
+        .once()
+        .withArgs(sinon.match.any, "someplayer", "Hello")
+        .returns({
+          reply: "Hi there!",
+          confidenceScore: 0.99,
+        });
+      const moderateOutboundStub = sinon
+        .stub(moderator, "moderateOutboundMessage")
+        .resolves({
+          message: "Hello",
+          flagged: false,
+        });
+      sinon.stub(moderator, "moderateInboundReply").resolves({
+        reply: "Hi there!",
+        flagged: false,
+      });
+      this.mockConsole.expects("warn").never();
+      mineflayerChatgpt.chatgpt(this.mockBot);
+      this.mockBot.chatgpt.setConfig({
+        messageApiKey: "sk-123",
+        moderationApiKey: "sk-456",
+        minimumJailbreakConfidenceScore: 0.85,
+      });
+
+      const reply = await this.mockBot.chatgpt.sendMessage(
+        "someplayer",
+        "Hello",
+      );
+
+      assert.equal(reply, "Hi there!");
+      assert.equal(moderateOutboundStub.firstCall.args[6], 0.85);
     });
   });
 });
