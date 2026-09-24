@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Plato - lib/moderation-client.js</title>
+  <title>Plato - lib/validator.js</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
@@ -36,7 +36,7 @@
 
 <div class="jumbotron">
   <div class="container">
-    <h1>lib/moderation-client.js</h1>
+    <h1>lib/validator.js</h1>
   </div>
 </div>
 
@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">68.41</p>
+      <p class="stat">76.68</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">136</p>
+      <p class="stat">137</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">27.62</p>
+      <p class="stat">21.50</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">0.56</p>
+      <p class="stat">0.30</p>
     </div>
   </div>
 </div>
@@ -90,141 +90,142 @@
 <div class="container">
   <div class="row">
     <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
-import { jailbreak } from &quot;@openai/guardrails&quot;;
-import OpenAI from &quot;openai&quot;;
-
-const JAILBREAK_MODEL = &quot;gpt-5.6&quot;;
-const JAILBREAK_MAX_TURNS = 10;
 
 /**
- * OpenAI moderation client wrapper.
+ * Validate whether moderation is enabled.
  *
- * @class
+ * @param {boolean} enableModeration - Moderation setting to validate.
+ * @returns {boolean} The validated setting.
+ * @throws {TypeError} When the setting is not a boolean.
  */
-class ModerationClient {
-  /**
-   * Initializes a new moderation client.
-   *
-   * @param {string} moderationApiKey - OpenAI API key used for the moderation endpoint.
-   */
-  constructor(moderationApiKey) {
-    this.openAI = new OpenAI({
-      apiKey: moderationApiKey,
-    });
+function validateEnableModeration(enableModeration) {
+  if (typeof enableModeration !== &quot;boolean&quot;) {
+    throw new TypeError(&quot;enableModeration must be a boolean&quot;);
   }
 
-  /**
-   * Create the OpenAI client adapter used by LLM-based guardrails.
-   *
-   * OpenAI Guardrails currently adds a temperature to GPT-5 requests. GPT-5.6
-   * uses reasoning by default and does not accept that parameter, so the
-   * adapter removes it before forwarding the request.
-   *
-   * @returns {object} OpenAI-compatible client for guardrail execution.
-   */
-  _createGuardrailLlm() {
-    return {
-      baseURL: this.openAI.baseURL,
-      chat: {
-        completions: {
-          create: (params) =&gt; {
-            params = { ...params };
-            delete params.temperature;
-            return this.openAI.chat.completions.create(params);
-          },
-        },
-      },
-    };
+  return enableModeration;
+}
+
+/**
+ * Validate whether model reply logging is enabled.
+ *
+ * @param {boolean} enableMessageLogging - Reply logging setting to validate.
+ * @returns {boolean} The validated setting.
+ * @throws {TypeError} When the setting is not a boolean.
+ */
+function validateEnableMessageLogging(enableMessageLogging) {
+  if (typeof enableMessageLogging !== &quot;boolean&quot;) {
+    throw new TypeError(&quot;enableMessageLogging must be a boolean&quot;);
   }
 
-  /**
-   * Convert OpenAI and guardrail execution failures to a consistent error.
-   *
-   * @param {unknown} error - Error raised by OpenAI or OpenAI Guardrails.
-   * @returns {Error} Normalized error.
-   */
-  _normalizeOpenAIError(error) {
-    if (error instanceof OpenAI.APIError) {
-      return new Error(
-        `An OpenAI error has occurred: ${error.status} ${error.type} ${error.code} ${error.message}`,
-        { cause: error },
-      );
-    }
+  return enableMessageLogging;
+}
 
-    const message =
-      error instanceof Error ? error.message : String(error || &quot;Unknown error&quot;);
-    return new Error(
-      `An OpenAI error has occurred: ${message.replace(/^Error:\s*/, &quot;&quot;)}`,
-      { cause: error },
+/**
+ * Validate the minimum delay between player messages.
+ * The delay must be a finite, non-negative number of seconds.
+ *
+ * @param {number} coolDownInSeconds - Cooldown duration to validate.
+ * @returns {number} The validated cooldown duration.
+ * @throws {RangeError} When the duration is not finite or is negative.
+ */
+function validateCoolDownInSeconds(coolDownInSeconds) {
+  if (
+    typeof coolDownInSeconds !== &quot;number&quot; ||
+    !Number.isFinite(coolDownInSeconds) ||
+    coolDownInSeconds &lt; 0
+  ) {
+    throw new RangeError(
+      &quot;coolDownInSeconds must be a non-negative finite number&quot;,
     );
   }
 
-  /**
-   * Use OpenAI Guardrails to detect a jailbreak attempt.
-   *
-   * @param {string} message - Message text to inspect.
-   * @param {number} [minimumJailbreakConfidenceScore=0.7] - Minimum confidence required to flag the message.
-   * @param {object[]} [conversationHistory=[]] - Recent conversation messages.
-   * @returns {Promise&lt;boolean&gt;} True when the jailbreak tripwire is triggered.
-   */
-  async detectJailbreakAttempt(
-    message,
-    minimumJailbreakConfidenceScore = 0.7,
-    conversationHistory = [],
-  ) {
-    try {
-      const result = await jailbreak(
-        {
-          guardrailLlm: this._createGuardrailLlm(),
-          getConversationHistory: () =&gt; conversationHistory,
-        },
-        message,
-        {
-          model: JAILBREAK_MODEL,
-          confidence_threshold: minimumJailbreakConfidenceScore,
-          include_reasoning: false,
-          max_turns: JAILBREAK_MAX_TURNS,
-        },
-      );
-
-      if (result.executionFailed) {
-        throw result.originalException;
-      }
-
-      return result.tripwireTriggered;
-    } catch (error) {
-      throw this._normalizeOpenAIError(error);
-    }
-  }
-
-  /**
-   * Use OpenAI&#039;s moderation API to check if the message violates content policy.
-   *
-   * @param {string} message - Message text to moderate.
-   * @returns {Promise&lt;object&gt;} Moderation result object.
-   */
-  async moderate(message) {
-    try {
-      const moderation = await this.openAI.moderations.create({
-        input: message,
-      });
-      const result = moderation.results[0];
-      return {
-        flagged: result.flagged,
-        categories: result.categories,
-        category_scores: result.category_scores,
-        message: message,
-      };
-    } catch (error) {
-      if (error instanceof OpenAI.APIError) {
-        throw this._normalizeOpenAIError(error);
-      }
-      throw error;
-    }
-  }
+  return coolDownInSeconds;
 }
 
-export { ModerationClient as default };</textarea>
+/**
+ * Validate the message returned when a reply cannot be provided.
+ *
+ * @param {string} fallbackMessage - Fallback message to validate.
+ * @returns {string} The validated fallback message.
+ * @throws {TypeError} When the message is not a non-empty string.
+ */
+function validateFallbackMessage(fallbackMessage) {
+  if (typeof fallbackMessage !== &quot;string&quot; || fallbackMessage.length === 0) {
+    throw new TypeError(&quot;fallbackMessage must be a non-empty string&quot;);
+  }
+
+  return fallbackMessage;
+}
+
+/**
+ * Validate whether security instructions are enabled.
+ *
+ * @param {boolean} enableSecurityInstructions - Security instruction setting to validate.
+ * @returns {boolean} The validated setting.
+ * @throws {TypeError} When the setting is not a boolean.
+ */
+function validateEnableSecurityInstructions(enableSecurityInstructions) {
+  if (typeof enableSecurityInstructions !== &quot;boolean&quot;) {
+    throw new TypeError(&quot;enableSecurityInstructions must be a boolean&quot;);
+  }
+
+  return enableSecurityInstructions;
+}
+
+/**
+ * Validate the minimum confidence score used to flag jailbreak attempts.
+ * The score must be a finite number in the inclusive range from 0 to 1.
+ *
+ * @param {number} minimumJailbreakConfidenceScore - Confidence score to validate.
+ * @returns {number} The validated confidence score.
+ * @throws {RangeError} When the score is not a finite number from 0 to 1.
+ */
+function validateJailbreakConfidenceScore(minimumJailbreakConfidenceScore) {
+  if (
+    typeof minimumJailbreakConfidenceScore !== &quot;number&quot; ||
+    !Number.isFinite(minimumJailbreakConfidenceScore) ||
+    minimumJailbreakConfidenceScore &lt; 0 ||
+    minimumJailbreakConfidenceScore &gt; 1
+  ) {
+    throw new RangeError(
+      &quot;minimumJailbreakConfidenceScore must be between 0 and 1&quot;,
+    );
+  }
+
+  return minimumJailbreakConfidenceScore;
+}
+
+/**
+ * Validate the minimum confidence score accepted for model replies.
+ * The score must be a finite number in the inclusive range from 0 to 1.
+ *
+ * @param {number} minimumReplyConfidenceScore - Confidence score to validate.
+ * @returns {number} The validated confidence score.
+ * @throws {RangeError} When the score is not a finite number from 0 to 1.
+ */
+function validateReplyConfidenceScore(minimumReplyConfidenceScore) {
+  if (
+    typeof minimumReplyConfidenceScore !== &quot;number&quot; ||
+    !Number.isFinite(minimumReplyConfidenceScore) ||
+    minimumReplyConfidenceScore &lt; 0 ||
+    minimumReplyConfidenceScore &gt; 1
+  ) {
+    throw new RangeError(&quot;minimumReplyConfidenceScore must be between 0 and 1&quot;);
+  }
+
+  return minimumReplyConfidenceScore;
+}
+
+export {
+  validateCoolDownInSeconds,
+  validateEnableMessageLogging,
+  validateEnableModeration,
+  validateEnableSecurityInstructions,
+  validateFallbackMessage,
+  validateJailbreakConfidenceScore,
+  validateReplyConfidenceScore,
+};</textarea>
   </div>
 </div>
 

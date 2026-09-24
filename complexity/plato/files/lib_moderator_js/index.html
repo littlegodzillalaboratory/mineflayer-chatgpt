@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">66.03</p>
+      <p class="stat">65.47</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">325</p>
+      <p class="stat">345</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">27.64</p>
+      <p class="stat">27.70</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">1.22</p>
+      <p class="stat">1.31</p>
     </div>
   </div>
 </div>
@@ -104,14 +104,6 @@ const SECURITY_INSTRUCTIONS_LIST = [
   &quot;Only address messages related to Minecraft. Politely decline unrelated topics.&quot;, // Domain Scope, reduce risk of LLM08 - Vector and Embedding Weakness
   &quot;If uncertain, say so. Do not invent facts.&quot;, // LLM09 - Misinformation
   &quot;Keep responses concise.&quot;, // LLM10 - Unbounded Consumption
-];
-
-const JAILBREAK_PATTERNS = [
-  /(ignore|disregard|forget)\s+(all\s+)?(previous|prior)?\s*(instructions|rules|prompts?)/i,
-  /(reveal|show|print|dump)\s+(system|hidden|developer)\s*(prompt|instructions?)/i,
-  /(you\s+are\s+now|act\s+as)\s+(root|admin|developer|system)/i,
-  /(bypass|disable|remove)\s+(safety|guardrails|filters|restrictions)/i,
-  /(no\s+restrictions|without\s+restrictions|without\s+filters)/i,
 ];
 
 const SECRET_LINT_OPTIONS = {
@@ -166,11 +158,23 @@ function detectSlashCommand(message) {
  * Detect whether a message attempts to jailbreak instruction boundaries.
  * LLM01 - Prompt Injection
  *
+ * @param {object} moderationClient - Client that can run the jailbreak guardrail.
  * @param {string} message - Message text to inspect.
- * @returns {boolean} True when a jailbreak attempt is detected.
+ * @param {number} [minimumJailbreakConfidenceScore=0.7] - Minimum confidence required to flag the message.
+ * @param {object[]} [conversationHistory=[]] - Recent conversation messages.
+ * @returns {Promise&lt;boolean&gt;} True when a jailbreak attempt is detected.
  */
-function detectJailbreakAttempt(message) {
-  return JAILBREAK_PATTERNS.some((pattern) =&gt; pattern.test(message));
+async function detectJailbreakAttempt(
+  moderationClient,
+  message,
+  minimumJailbreakConfidenceScore = 0.7,
+  conversationHistory = [],
+) {
+  return moderationClient.detectJailbreakAttempt(
+    message,
+    minimumJailbreakConfidenceScore,
+    conversationHistory,
+  );
 }
 
 /**
@@ -243,18 +247,18 @@ function checkLastMessageCoolDown(
  * LLM09 - Misinformation
  *
  * @param {number} confidenceScore - Inferred confidence score.
- * @param {number} minimumConfidenceScore - Minimum allowed confidence.
+ * @param {number} minimumReplyConfidenceScore - Minimum allowed confidence.
  * @param {string} fallbackMessage - Fallback reply.
  * @returns {object} Confidence check result object.
  */
 function checkConfidenceScore(
   confidenceScore,
-  minimumConfidenceScore,
+  minimumReplyConfidenceScore,
   fallbackMessage,
 ) {
-  if (confidenceScore &lt; minimumConfidenceScore) {
+  if (confidenceScore &lt; minimumReplyConfidenceScore) {
     console.warn(
-      `Reply confidence score ${confidenceScore} is below minimum ${minimumConfidenceScore}`,
+      `Reply confidence score ${confidenceScore} is below minimum ${minimumReplyConfidenceScore}`,
     );
     return {
       reply: fallbackMessage,
@@ -276,6 +280,7 @@ function checkConfidenceScore(
  * @param {string} message - Outbound message.
  * @param {string} fallbackMessage - Fallback message.
  * @param {number} [coolDownInSeconds=15] - Minimum seconds between messages.
+ * @param {number} [minimumJailbreakConfidenceScore=0.7] - Minimum confidence required to flag a jailbreak.
  * @returns {Promise&lt;object&gt;} Moderated outbound message object.
  */
 async function moderateOutboundMessage(
@@ -285,6 +290,7 @@ async function moderateOutboundMessage(
   message,
   fallbackMessage,
   coolDownInSeconds = 15,
+  minimumJailbreakConfidenceScore = 0.7,
 ) {
   const coolDownCheck = checkLastMessageCoolDown(
     memory,
@@ -298,7 +304,21 @@ async function moderateOutboundMessage(
 
   const sanitisedMessage = sanitiseProfanity(message);
 
-  if (detectJailbreakAttempt(sanitisedMessage)) {
+  const conversationHistory = memory
+    .retrieve(player)
+    .getMessages()
+    .map((conversationMessage) =&gt; ({
+      role: conversationMessage.getRole(),
+      content: conversationMessage.getContent(),
+    }));
+  if (
+    await detectJailbreakAttempt(
+      openAIClient,
+      sanitisedMessage,
+      minimumJailbreakConfidenceScore,
+      conversationHistory,
+    )
+  ) {
     console.warn(`Message contains jailbreak attempt: ${sanitisedMessage}`);
     return {
       message: fallbackMessage,
@@ -338,7 +358,7 @@ async function moderateOutboundMessage(
  * @param {string} reply - Model reply.
  * @param {string} fallbackMessage - Fallback message.
  * @param {number} [confidenceScore=1] - Reply confidence score.
- * @param {number} [minimumConfidenceScore=0] - Minimum accepted confidence.
+ * @param {number} [minimumReplyConfidenceScore=0] - Minimum accepted confidence.
  * @returns {Promise&lt;object&gt;} Moderated inbound reply object.
  */
 async function moderateInboundReply(
@@ -346,13 +366,13 @@ async function moderateInboundReply(
   reply,
   fallbackMessage,
   confidenceScore = 1,
-  minimumConfidenceScore = 0,
+  minimumReplyConfidenceScore = 0,
 ) {
   const sanitisedReply = sanitiseProfanity(reply);
 
   const confidenceCheck = checkConfidenceScore(
     confidenceScore,
-    minimumConfidenceScore,
+    minimumReplyConfidenceScore,
     fallbackMessage,
   );
   if (confidenceCheck.flagged) {

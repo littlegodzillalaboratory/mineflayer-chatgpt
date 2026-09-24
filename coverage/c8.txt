@@ -1,4 +1,4 @@
-test | /opt/hostedtoolcache/node/26.8.2/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
+test | /opt/hostedtoolcache/node/22.23.2/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
 
 [0m[0m
 [0m  conversation[0m
@@ -30,18 +30,21 @@ test | /opt/hostedtoolcache/node/26.8.2/x64/lib/node_modules/bob/node_modules/.b
     [32m  [32m✔[39m[0m[90m should enforce size limit per player independently[0m
 
 [0m  message-client[0m
-[0m    confidence score helpers[0m
-    [32m  [32m✔[39m[0m[90m should clamp confidence score to range 0..1[0m
-    [32m  [32m✔[39m[0m[90m should extract confidenceScore from message camelCase field[0m
-    [32m  [32m✔[39m[0m[90m should extract confidenceScore from message snake_case field[0m
-    [32m  [32m✔[39m[0m[90m should derive confidenceScore from token logprobs[0m
-    [32m  [32m✔[39m[0m[90m should default confidenceScore to 1 when unavailable[0m
+[0m    structured reply parsing[0m
+    [32m  [32m✔[39m[0m[90m should parse a valid reply and confidence score[0m
+    [32m  [32m✔[39m[0m[90m should reject malformed JSON[0m
+    [32m  [32m✔[39m[0m[90m should reject invalid confidence score -0.1[0m
+    [32m  [32m✔[39m[0m[90m should reject invalid confidence score 1.1[0m
+    [32m  [32m✔[39m[0m[90m should reject invalid confidence score Infinity[0m
+    [32m  [32m✔[39m[0m[90m should reject invalid confidence score 0.8[0m
+    [32m  [32m✔[39m[0m[90m should reject a missing reply[0m
+    [32m  [32m✔[39m[0m[90m should reject a model refusal[0m
 [0m    chat with OpenAI API[0m
     [32m  [32m✔[39m[0m[90m should return a reply from chat completion message[0m
     [32m  [32m✔[39m[0m[90m should register messages to memory[0m
     [32m  [32m✔[39m[0m[90m should include conversation history for existing players[0m
     [32m  [32m✔[39m[0m[90m should use custom model when provided in options[0m
-    [32m  [32m✔[39m[0m[90m should keep completion confidence options internal[0m
+    [32m  [32m✔[39m[0m[90m should use structured output instead of token probabilities[0m
     [32m  [32m✔[39m[0m[90m should use custom instructions when provided in options[0m
     [32m  [32m✔[39m[0m[90m should append security instructions to default instructions[0m
     [32m  [32m✔[39m[0m[90m should use a custom baseURL when provided in options, for a local LLM server[0m
@@ -65,6 +68,14 @@ test | /opt/hostedtoolcache/node/26.8.2/x64/lib/node_modules/bob/node_modules/.b
     [32m  [32m✔[39m[0m[90m should add sendMessage function[0m
     [32m  [32m✔[39m[0m[90m should set config when setConfig is called with opts[0m
     [32m  [32m✔[39m[0m[90m should set config when setConfig is called without opts[0m
+    [32m  [32m✔[39m[0m[90m should reject jailbreak confidence thresholds outside 0 and 1[0m
+    [32m  [32m✔[39m[0m[90m should reject a non-numeric jailbreak confidence threshold[0m
+    [32m  [32m✔[39m[0m[90m should reject invalid minimum reply confidence scores[0m
+    [32m  [32m✔[39m[0m[90m should reject invalid enableModeration[0m
+    [32m  [32m✔[39m[0m[90m should reject invalid enableMessageLogging[0m
+    [32m  [32m✔[39m[0m[90m should reject invalid coolDownInSeconds[0m
+    [32m  [32m✔[39m[0m[90m should reject invalid fallbackMessage[0m
+    [32m  [32m✔[39m[0m[90m should reject invalid enableSecurityInstructions[0m
     [32m  [32m✔[39m[0m[90m should call client chat when sendMessage is called without error[0m
     [32m  [32m✔[39m[0m[90m should log error message when it is a generic error[0m
     [32m  [32m✔[39m[0m[90m should log error message when OpenAI error is rethrown by client[0m
@@ -75,11 +86,16 @@ test | /opt/hostedtoolcache/node/26.8.2/x64/lib/node_modules/bob/node_modules/.b
     [32m  [32m✔[39m[0m[90m should return custom fallback message when reply contains slash command[0m
     [32m  [32m✔[39m[0m[90m should return custom fallback message when reply contains prompt leakage[0m
     [32m  [32m✔[39m[0m[90m should return fallback message when reply confidence score is below minimum[0m
-    [32m  [32m✔[39m[0m[90m should use custom minimumConfidenceScore when provided[0m
+    [32m  [32m✔[39m[0m[90m should use custom minimumReplyConfidenceScore when provided[0m
     [32m  [32m✔[39m[0m[90m should use custom coolDownInSeconds when provided[0m
+    [32m  [32m✔[39m[0m[90m should use custom minimumJailbreakConfidenceScore when provided[0m
 
 [0m  moderation-client[0m
   [32m  [32m✔[39m[0m[90m should moderate content through OpenAI moderation API[0m
+  [32m  [32m✔[39m[0m[90m should detect jailbreaks using OpenAI Guardrails[0m
+  [32m  [32m✔[39m[0m[90m should apply the configured jailbreak confidence threshold[0m
+  [32m  [32m✔[39m[0m[90m should propagate OpenAI Guardrails execution failures[0m
+  [32m  [32m✔[39m[0m[90m should normalize OpenAI API errors from Guardrails[0m
   [32m  [32m✔[39m[0m[90m should wrap OpenAI.APIError from moderation API and rethrow as a regular Error[0m
 
 [0m  moderator - sanitiseProfanity[0m
@@ -101,9 +117,7 @@ test | /opt/hostedtoolcache/node/26.8.2/x64/lib/node_modules/bob/node_modules/.b
   [32m  [32m✔[39m[0m[90m should return false when no slash command is present[0m
 
 [0m  moderator - detectJailbreakAttempt[0m
-  [32m  [32m✔[39m[0m[90m should detect instruction override jailbreak attempt[0m
-  [32m  [32m✔[39m[0m[90m should detect prompt exfiltration jailbreak attempt[0m
-  [32m  [32m✔[39m[0m[90m should return false when no jailbreak attempt is present[0m
+  [32m  [32m✔[39m[0m[90m should return the OpenAI Guardrails result[0m
 
 [0m  moderator - detectSecretsCredentials[0m
   [32m  [32m✔[39m[0m[90m should detect an OpenAI API token[0m
@@ -137,19 +151,80 @@ Reply confidence score 0.4 is below minimum 0.9
   [32m  [32m✔[39m[0m[90m should return fallback when reply is flagged by moderation[0m
   [32m  [32m✔[39m[0m[90m should return fallback when reply contains secret credential[0m
 
+[0m  validator - validateEnableModeration[0m
+  [32m  [32m✔[39m[0m[90m should accept boolean values[0m
+  [32m  [32m✔[39m[0m[90m should reject non-boolean value 0[0m
+  [32m  [32m✔[39m[0m[90m should reject non-boolean value 1[0m
+  [32m  [32m✔[39m[0m[90m should reject non-boolean value true[0m
+  [32m  [32m✔[39m[0m[90m should reject non-boolean value null[0m
+  [32m  [32m✔[39m[0m[90m should reject non-boolean value undefined[0m
 
-[92m [0m[32m 95 passing[0m[90m (103ms)[0m
+[0m  validator - validateEnableMessageLogging[0m
+  [32m  [32m✔[39m[0m[90m should accept boolean values[0m
+  [32m  [32m✔[39m[0m[90m should reject non-boolean value 0[0m
+  [32m  [32m✔[39m[0m[90m should reject non-boolean value 1[0m
+  [32m  [32m✔[39m[0m[90m should reject non-boolean value true[0m
+  [32m  [32m✔[39m[0m[90m should reject non-boolean value null[0m
+  [32m  [32m✔[39m[0m[90m should reject non-boolean value undefined[0m
+
+[0m  validator - validateEnableSecurityInstructions[0m
+  [32m  [32m✔[39m[0m[90m should accept boolean values[0m
+  [32m  [32m✔[39m[0m[90m should reject non-boolean value 0[0m
+  [32m  [32m✔[39m[0m[90m should reject non-boolean value 1[0m
+  [32m  [32m✔[39m[0m[90m should reject non-boolean value true[0m
+  [32m  [32m✔[39m[0m[90m should reject non-boolean value null[0m
+  [32m  [32m✔[39m[0m[90m should reject non-boolean value undefined[0m
+
+[0m  validator - validateCoolDownInSeconds[0m
+  [32m  [32m✔[39m[0m[90m should accept finite, non-negative numbers[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid cooldown -0.1[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid cooldown Infinity[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid cooldown -Infinity[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid cooldown NaN[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid cooldown 15[0m
+
+[0m  validator - validateFallbackMessage[0m
+  [32m  [32m✔[39m[0m[90m should accept a non-empty string[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid fallback message [0m
+  [32m  [32m✔[39m[0m[90m should reject invalid fallback message 0[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid fallback message false[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid fallback message null[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid fallback message undefined[0m
+
+[0m  validator - validateJailbreakConfidenceScore[0m
+  [32m  [32m✔[39m[0m[90m should accept the inclusive confidence score boundaries[0m
+  [32m  [32m✔[39m[0m[90m should accept a finite confidence score between the boundaries[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid confidence score -0.1[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid confidence score 1.1[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid confidence score Infinity[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid confidence score -Infinity[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid confidence score NaN[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid confidence score 0.7[0m
+
+[0m  validator - validateReplyConfidenceScore[0m
+  [32m  [32m✔[39m[0m[90m should accept the inclusive confidence score boundaries[0m
+  [32m  [32m✔[39m[0m[90m should accept a finite confidence score between the boundaries[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid confidence score -0.1[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid confidence score 1.1[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid confidence score Infinity[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid confidence score -Infinity[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid confidence score NaN[0m
+  [32m  [32m✔[39m[0m[90m should reject invalid confidence score 0.9[0m
+
+
+[92m [0m[32m 155 passing[0m[90m (92ms)[0m
 
 SUCCESS | exit code 0
 -----------------------|---------|----------|---------|---------|-------------------
 File                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -----------------------|---------|----------|---------|---------|-------------------
-All files              |     100 |    98.03 |     100 |     100 |                   
+All files              |   99.82 |    97.33 |     100 |   99.82 |                   
  conversation.js       |     100 |      100 |     100 |     100 |                   
  memory.js             |     100 |      100 |     100 |     100 |                   
- message-client.js     |     100 |    96.29 |     100 |     100 | 46                
+ message-client.js     |     100 |    96.15 |     100 |     100 | 68                
  message.js            |     100 |      100 |     100 |     100 |                   
- mineflayer-chatgpt.js |     100 |    93.75 |     100 |     100 | 42                
- moderation-client.js  |     100 |      100 |     100 |     100 |                   
+ mineflayer-chatgpt.js |     100 |    95.83 |     100 |     100 | 56                
+ moderation-client.js  |   98.52 |    85.71 |     100 |   98.52 | 131-132           
  moderator.js          |     100 |      100 |     100 |     100 |                   
+ validator.js          |     100 |      100 |     100 |     100 |                   
 -----------------------|---------|----------|---------|---------|-------------------
