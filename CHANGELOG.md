@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Added
 - Add configurable minimum jailbreak confidence score
+- Add opts validations
 
 ### Changed
 - Replace hard-coded jailbreak patterns with OpenAI Guardrails detection

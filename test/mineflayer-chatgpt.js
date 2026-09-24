@@ -82,6 +82,34 @@ describe("mineflayer-chatgpt", function () {
         /minimumReplyConfidenceScore must be between 0 and 1/,
       );
     });
+    for (const [option, value, expectedMessage] of [
+      ["enableModeration", "true", "enableModeration must be a boolean"],
+      ["enableMessageLogging", 1, "enableMessageLogging must be a boolean"],
+      [
+        "coolDownInSeconds",
+        -1,
+        "coolDownInSeconds must be a non-negative finite number",
+      ],
+      ["fallbackMessage", "", "fallbackMessage must be a non-empty string"],
+      [
+        "enableSecurityInstructions",
+        null,
+        "enableSecurityInstructions must be a boolean",
+      ],
+    ]) {
+      it(`should reject invalid ${option}`, function () {
+        mineflayerChatgpt.chatgpt(this.mockBot);
+        assert.throws(
+          () =>
+            this.mockBot.chatgpt.setConfig({
+              messageApiKey: "sk-123",
+              moderationApiKey: "sk-456",
+              [option]: value,
+            }),
+          new RegExp(expectedMessage),
+        );
+      });
+    }
     it("should call client chat when sendMessage is called without error", async function () {
       this.mockClient
         .expects("chat")
