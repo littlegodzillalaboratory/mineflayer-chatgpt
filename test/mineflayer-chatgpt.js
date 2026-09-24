@@ -70,6 +70,18 @@ describe("mineflayer-chatgpt", function () {
         /minimumJailbreakConfidenceScore must be between 0 and 1/,
       );
     });
+    it("should reject invalid minimum reply confidence scores", function () {
+      mineflayerChatgpt.chatgpt(this.mockBot);
+      assert.throws(
+        () =>
+          this.mockBot.chatgpt.setConfig({
+            messageApiKey: "sk-123",
+            moderationApiKey: "sk-456",
+            minimumReplyConfidenceScore: Infinity,
+          }),
+        /minimumReplyConfidenceScore must be between 0 and 1/,
+      );
+    });
     it("should call client chat when sendMessage is called without error", async function () {
       this.mockClient
         .expects("chat")
@@ -423,7 +435,7 @@ describe("mineflayer-chatgpt", function () {
       );
     });
 
-    it("should use custom minimumConfidenceScore when provided", async function () {
+    it("should use custom minimumReplyConfidenceScore when provided", async function () {
       this.mockClient
         .expects("chat")
         .once()
@@ -449,7 +461,7 @@ describe("mineflayer-chatgpt", function () {
       this.mockBot.chatgpt.setConfig({
         messageApiKey: "sk-123",
         moderationApiKey: "sk-456",
-        minimumConfidenceScore: 0.8,
+        minimumReplyConfidenceScore: 0.8,
       });
       const reply = await this.mockBot.chatgpt.sendMessage(
         "someplayer",
