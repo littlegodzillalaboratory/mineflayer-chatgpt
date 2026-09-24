@@ -10,55 +10,72 @@ const SECURITY_INSTRUCTION_MARKERS = [
   "Keep responses concise.",
 ];
 
+function createCompletion(reply = "Hi there!", confidenceScore = 0.8) {
+  return {
+    id: "compl-123",
+    choices: [
+      {
+        message: {
+          content: JSON.stringify({ reply, confidenceScore }),
+        },
+      },
+    ],
+  };
+}
+
 describe("message-client", function () {
-  describe("confidence score helpers", function () {
+  describe("structured reply parsing", function () {
     beforeEach(function () {
       this.client = new MessageClient("sk-test-key");
     });
 
-    it("should clamp confidence score to range 0..1", function () {
-      assert.equal(this.client._clampConfidenceScore(-0.2), 0);
-      assert.equal(this.client._clampConfidenceScore(0.7), 0.7);
-      assert.equal(this.client._clampConfidenceScore(1.4), 1);
-    });
-
-    it("should extract confidenceScore from message camelCase field", function () {
-      const score = this.client._extractConfidenceScore({
-        message: {
+    it("should parse a valid reply and confidence score", function () {
+      const result = this.client._parseStructuredReply({
+        content: JSON.stringify({
+          reply: "Hi there!",
           confidenceScore: 0.42,
-        },
+        }),
       });
-      assert.equal(score, 0.42);
+      assert.deepEqual(result, {
+        reply: "Hi there!",
+        confidenceScore: 0.42,
+      });
     });
 
-    it("should extract confidenceScore from message snake_case field", function () {
-      const score = this.client._extractConfidenceScore({
-        message: {
-          confidence_score: 0.33,
-        },
-      });
-      assert.equal(score, 0.33);
+    it("should reject malformed JSON", function () {
+      assert.throws(
+        () => this.client._parseStructuredReply({ content: "not JSON" }),
+        /invalid structured reply/,
+      );
     });
 
-    it("should derive confidenceScore from token logprobs", function () {
-      const score = this.client._extractConfidenceScore({
-        message: {
-          content: "Hi there!",
-        },
-        logprobs: {
-          content: [{ logprob: -0.1 }, { logprob: -0.2 }],
-        },
+    for (const confidenceScore of [-0.1, 1.1, Infinity, "0.8"]) {
+      it(`should reject invalid confidence score ${confidenceScore}`, function () {
+        assert.throws(
+          () =>
+            this.client._parseStructuredReply({
+              content: JSON.stringify({ reply: "Hi", confidenceScore }),
+            }),
+          /invalid structured reply/,
+        );
       });
-      assert.ok(score > 0 && score < 1);
+    }
+
+    it("should reject a missing reply", function () {
+      assert.throws(
+        () =>
+          this.client._parseStructuredReply({
+            content: JSON.stringify({ confidenceScore: 0.8 }),
+          }),
+        /invalid structured reply/,
+      );
     });
 
-    it("should default confidenceScore to 1 when unavailable", function () {
-      const score = this.client._extractConfidenceScore({
-        message: {
-          content: "Hi there!",
-        },
-      });
-      assert.equal(score, 1);
+    it("should reject a model refusal", function () {
+      assert.throws(
+        () => this.client._parseStructuredReply({ refusal: "I cannot help." }),
+        /model refused to reply/,
+      );
     });
   });
 
@@ -72,13 +89,12 @@ describe("message-client", function () {
               assert.equal(params.messages[1].role, "user");
               assert.equal(params.messages[1].content, "Hello");
               assert.equal(params.model, "gpt-5.6");
-              assert.equal(params.temperature, 0);
-              assert.equal(params.logprobs, true);
-              assert.equal(params.top_logprobs, 3);
-              return {
-                id: "compl-123",
-                choices: [{ message: { content: "Hi there!" } }],
-              };
+              assert.equal(params.temperature, undefined);
+              assert.equal(params.logprobs, undefined);
+              assert.equal(params.top_logprobs, undefined);
+              assert.equal(params.response_format.type, "json_schema");
+              assert.equal(params.response_format.json_schema.strict, true);
+              return createCompletion();
             },
           },
         },
@@ -90,7 +106,7 @@ describe("message-client", function () {
     it("should return a reply from chat completion message", async function () {
       const result = await this.client.chat(this.memory, "someplayer", "Hello");
       assert.equal(result.reply, "Hi there!");
-      assert.equal(result.confidenceScore, 1);
+      assert.equal(result.confidenceScore, 0.8);
     });
 
     it("should register messages to memory", async function () {
@@ -119,10 +135,7 @@ describe("message-client", function () {
         }
         assert.equal(params.messages[1].role, "user");
         assert.equal(params.messages[1].content, "First hello");
-        return {
-          id: "compl-123",
-          choices: [{ message: { content: "Hi there!" } }],
-        };
+        return createCompletion();
       };
 
       // someplayer's first message
@@ -146,10 +159,7 @@ describe("message-client", function () {
         assert.equal(params.messages[2].content, "Hi there!");
         assert.equal(params.messages[3].role, "user");
         assert.equal(params.messages[3].content, "Second hello");
-        return {
-          id: "compl-456",
-          choices: [{ message: { content: "Hi there again!" } }],
-        };
+        return createCompletion("Hi there again!", 0.7);
       };
 
       // someplayer's second message
@@ -159,7 +169,7 @@ describe("message-client", function () {
         "Second hello",
       );
       assert.equal(reply.reply, "Hi there again!");
-      assert.equal(reply.confidenceScore, 1);
+      assert.equal(reply.confidenceScore, 0.7);
     });
 
     it("should use custom model when provided in options", function () {
@@ -169,15 +179,18 @@ describe("message-client", function () {
       assert.equal(clientWithOpts.opts.model, "gpt-5.6");
     });
 
-    it("should keep completion confidence options internal", async function () {
+    it("should use structured output instead of token probabilities", async function () {
       this.mockOpenAI.chat.completions.create = function (params) {
-        assert.equal(params.temperature, 0);
-        assert.equal(params.logprobs, true);
-        assert.equal(params.top_logprobs, 3);
-        return {
-          id: "compl-789",
-          choices: [{ message: { content: "Hi there!" } }],
-        };
+        assert.equal(params.temperature, undefined);
+        assert.equal(params.logprobs, undefined);
+        assert.equal(params.top_logprobs, undefined);
+        assert.equal(params.response_format.type, "json_schema");
+        const schema = params.response_format.json_schema.schema;
+        assert.deepEqual(schema.required, ["reply", "confidenceScore"]);
+        assert.equal(schema.properties.confidenceScore.minimum, 0);
+        assert.equal(schema.properties.confidenceScore.maximum, 1);
+        assert.equal(schema.additionalProperties, false);
+        return createCompletion();
       };
 
       const clientWithOpts = new MessageClient("sk-test-key", {

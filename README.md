@@ -85,7 +85,7 @@ bot.chatgpt.sendMessage('player', 'How to craft a diamond sword in Minecraft?');
 | enableSecurityInstructions | Appends security instructions to the base instructions for hardening the model against prompt injection and other LLM threats. | boolean | No | true | false |
 | enableModeration | Enables outbound and inbound moderation checks. | boolean | No | true | false |
 | coolDownInSeconds | Minimum seconds required between a player's latest prior message and the next outbound message. | number | No | 15 | 30 |
-| minimumReplyConfidenceScore | Minimum accepted reply confidence score. Replies below this threshold are replaced by fallbackMessage. | number | No | 0.9 | 0.8 |
+| minimumReplyConfidenceScore | Minimum accepted self-reported reply confidence score. Replies below this threshold are replaced by fallbackMessage. | number | No | 0.9 | 0.8 |
 | minimumJailbreakConfidenceScore | Minimum OpenAI Guardrails confidence required to classify an outbound message as a jailbreak attempt. | number (0–1) | No | 0.7 | 0.8 |
 | enableMessageLogging | Logs model replies to console output. | boolean | No | false | true |
 | fallbackMessage | Response returned when moderation, cooldown, or confidence checks fail. | string | No | Sorry, I cannot provide a response to that message. | Please wait a moment before sending another message. |

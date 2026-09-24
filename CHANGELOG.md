@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Replace hard-coded jailbreak patterns with OpenAI Guardrails detection
 - Rename `minimumConfidenceScore` to `minimumReplyConfidenceScore`
+- Replace token-probability reply confidence with GPT-5.6-compatible self-reported confidence
 
 ## 1.4.0 - 2026-08-19
 ### Changed
