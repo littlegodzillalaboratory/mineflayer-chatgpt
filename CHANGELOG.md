@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rename `minimumConfidenceScore` to `minimumReplyConfidenceScore`
 - Replace token-probability reply confidence with GPT-5.6-compatible self-reported confidence
 
+### Fixed
+- Normalize OpenAI Guardrails execution errors
+- Remove the unsupported temperature parameter from GPT-5.6 guardrail requests
+- Handle the expected API rejection in the example bot
+
 ### Removed
 - Drop support for OpenAI model older than GPT-5.6
 

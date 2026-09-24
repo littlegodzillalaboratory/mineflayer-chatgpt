@@ -16,13 +16,18 @@ console.log('Loading Mineflayer ChatGPT plugin...')
 bot.loadPlugin(mineflayerChatgpt.chatgpt);
 
 console.log('Spawning example bot...');
-bot.once('spawn', () => {
+bot.once('spawn', async () => {
   bot.chatgpt.setConfig({
     messageApiKey: 'sk-someapikey1',
     moderationApiKey: 'sk-someapikey2'
   });
-  bot.chatgpt.sendMessage('otherplayer', 'Hello');
   console.log('Example bot has been spawned');
-  // Since we don't use a valid API key, the above call will log the following error message:
-  // An unexpected error has occurred: An OpenAI error has occurred: 401 invalid_request_error invalid_api_key 401 Incorrect API key provided: sk-somei***********ikey. You can find your API key at https://platform.openai.com/account/api-keys.
+  try {
+    await bot.chatgpt.sendMessage('otherplayer', 'Hello');
+  } catch {
+    // This example deliberately uses invalid API keys. The plugin logs the
+    // normalized OpenAI error; close the bot without an unhandled rejection.
+    process.exitCode = 1;
+    bot.quit();
+  }
 });
