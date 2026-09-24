@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rename `minimumConfidenceScore` to `minimumReplyConfidenceScore`
 - Replace token-probability reply confidence with GPT-5.6-compatible self-reported confidence
 
+### Removed
+- Drop support for OpenAI model older than GPT-5.6
+
 ## 1.4.0 - 2026-08-19
 ### Changed
 - Decouple client into message client and moderation client
