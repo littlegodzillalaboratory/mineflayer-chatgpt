@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 2.0.0 - 2026-09-25
 ### Added
 - Add configurable minimum jailbreak confidence score
 - Add opts validations
@@ -15,13 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rename `minimumConfidenceScore` to `minimumReplyConfidenceScore`
 - Replace token-probability reply confidence with GPT-5.6-compatible self-reported confidence
 
+### Removed
+- Drop support for OpenAI model older than GPT-5.6
+
 ### Fixed
 - Normalize OpenAI Guardrails execution errors
 - Remove the unsupported temperature parameter from GPT-5.6 guardrail requests
 - Handle the expected API rejection in the example bot
-
-### Removed
-- Drop support for OpenAI model older than GPT-5.6
 
 ## 1.4.0 - 2026-08-19
 ### Changed
